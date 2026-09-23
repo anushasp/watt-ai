@@ -1,0 +1,96 @@
+import type { EnergyPlan } from '@/types';
+
+/** Fictional retailers and plans. Nothing here corresponds to a real energy product. */
+export const PLANS: readonly EnergyPlan[] = [
+  {
+    id: 'smart-home-12',
+    retailer: 'Clear Energy Co.',
+    name: 'Smart Home 12',
+    ratePerKwh: 0.158,
+    offPeakRate: 0.112,
+    monthlyFee: 6,
+    contractMonths: 12,
+    renewablePct: 45,
+    supportsBattery: true,
+    earlyExitFee: 0,
+    badges: ['ai-recommended', 'fixed-rate', 'ev-friendly'],
+    summary:
+      'Fits a typical 1,428 kWh month. No minimum usage penalty, and a lower overnight rate for EV charging.',
+  },
+  {
+    id: 'green-saver-24',
+    retailer: 'Meridian Power',
+    name: 'Green Saver 24',
+    ratePerKwh: 0.171,
+    offPeakRate: 0.171,
+    monthlyFee: 0,
+    contractMonths: 24,
+    renewablePct: 100,
+    supportsBattery: true,
+    earlyExitFee: 95,
+    badges: ['renewable', 'fixed-rate'],
+    summary:
+      'Renewable energy at a predictable cost. A single rate all day, which suits homes with solar export.',
+  },
+  {
+    id: 'night-charge-flex',
+    retailer: 'Volt & Co.',
+    name: 'Night Charge Flex',
+    ratePerKwh: 0.198,
+    offPeakRate: 0.079,
+    monthlyFee: 9,
+    contractMonths: 0,
+    renewablePct: 30,
+    supportsBattery: true,
+    earlyExitFee: 0,
+    badges: ['ev-friendly', 'no-lock-in'],
+    summary:
+      'The cheapest overnight rate on the list, built for EV owners who charge at home after midnight.',
+  },
+  {
+    id: 'steady-rate-18',
+    retailer: 'Harbour Electric',
+    name: 'Steady Rate 18',
+    ratePerKwh: 0.164,
+    offPeakRate: 0.164,
+    monthlyFee: 4,
+    contractMonths: 18,
+    renewablePct: 20,
+    supportsBattery: false,
+    earlyExitFee: 60,
+    badges: ['fixed-rate'],
+    summary: 'One rate, eighteen months, no surprises. Suits a household that wants the bill to stay still.',
+  },
+  {
+    id: 'open-market',
+    retailer: 'Harbour Electric',
+    name: 'Open Market',
+    ratePerKwh: 0.186,
+    offPeakRate: 0.186,
+    monthlyFee: 0,
+    contractMonths: 0,
+    renewablePct: 12,
+    supportsBattery: false,
+    earlyExitFee: 0,
+    badges: ['no-lock-in'],
+    summary: 'A variable rate with no commitment. The rate moves with the wholesale market each quarter.',
+  },
+  {
+    id: 'sun-export-plus',
+    retailer: 'Meridian Power',
+    name: 'Sun Export Plus',
+    ratePerKwh: 0.176,
+    offPeakRate: 0.131,
+    monthlyFee: 7,
+    contractMonths: 12,
+    renewablePct: 100,
+    supportsBattery: true,
+    earlyExitFee: 0,
+    badges: ['renewable', 'ev-friendly'],
+    summary:
+      'Pays a higher credit for exported solar and stored battery power, with a lower overnight rate.',
+  },
+];
+
+/** The plan the household is currently on, used as the savings baseline. */
+export const CURRENT_PLAN_NAME = 'Basic Residential';

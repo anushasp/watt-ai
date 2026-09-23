@@ -1,0 +1,197 @@
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: var(--space-48);
+  align-items: start;
+}
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-24);
+  min-width: 0;
+}
+.transcript {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 520px;
+  overflow-y: auto;
+}
+.turn {
+  display: flex;
+}
+.turn[data-role='user'] {
+  justify-content: flex-end;
+}
+.bubble {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  max-width: 85%;
+  padding: var(--space-16);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-card);
+  background: var(--neutral-white);
+}
+.bubble[data-role='user'] {
+  background: var(--neutral-darkest);
+  border-color: var(--neutral-darkest);
+  color: var(--neutral-white);
+}
+.calcs {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 0;
+  border-top: 1px solid var(--border-default);
+}
+.calcs > div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-16);
+  padding: var(--space-8) 0;
+  border-bottom: 1px solid var(--border-default);
+}
+.calcs dt {
+  font-size: var(--text-small);
+  color: var(--text-muted);
+}
+.calcs dd {
+  margin: 0;
+  font-size: var(--text-small);
+  font-weight: var(--weight-medium);
+  text-align: right;
+}
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-12);
+  padding: var(--space-48);
+  border: 1px dashed var(--ink-35);
+  border-radius: var(--radius-card);
+  text-align: center;
+}
+.composer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  padding: var(--space-16);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-card);
+  background: var(--neutral-white);
+}
+.textarea {
+  width: 100%;
+  border: 0;
+  resize: vertical;
+  font-family: var(--font-body);
+  font-size: var(--text-regular);
+  line-height: var(--leading-body);
+  color: var(--text-primary);
+  background: transparent;
+}
+.textarea:focus {
+  outline: none;
+}
+.composer:focus-within {
+  outline: 2px solid var(--neutral-darkest);
+  outline-offset: 2px;
+}
+.composerActions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-16);
+  flex-wrap: wrap;
+}
+.rail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-32);
+  position: sticky;
+  top: calc(var(--navbar-height) + var(--space-24));
+}
+.railBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  padding: var(--space-24);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-card);
+  background: var(--neutral-white);
+}
+.chips,
+.prompts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.chip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-8);
+  padding: var(--space-8) var(--space-12);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-field);
+  background: var(--ink-5);
+}
+.chipBody {
+  display: flex;
+  flex-direction: column;
+  font-size: var(--text-small);
+  min-width: 0;
+}
+.chipBody span {
+  color: var(--text-muted);
+  font-size: var(--text-tiny);
+}
+.chipRemove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border: 0;
+  border-radius: var(--radius-tag);
+  background: transparent;
+  cursor: pointer;
+  color: var(--neutral-darkest);
+}
+.chipRemove:hover {
+  background: var(--ink-10);
+}
+.prompt {
+  width: 100%;
+  padding: var(--space-12);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-field);
+  background: var(--neutral-white);
+  text-align: left;
+  font-size: var(--text-small);
+  cursor: pointer;
+}
+.prompt:hover {
+  background: var(--ink-5);
+}
+
+@media (max-width: 899px) {
+  .workspace {
+    grid-template-columns: 1fr;
+    gap: var(--space-32);
+  }
+  .rail {
+    position: static;
+  }
+  .bubble {
+    max-width: 100%;
+  }
+}

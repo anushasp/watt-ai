@@ -1,0 +1,47 @@
+.arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-arrow);
+  background: var(--neutral-white);
+  color: var(--neutral-darkest);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+.arrow:hover:not(:disabled) {
+  background: var(--neutral-lightest);
+}
+.arrow:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.dots {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--ink-20);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+.dot[aria-current='true'] {
+  background: var(--neutral-darkest);
+}
+.dark .dot {
+  background: var(--white-20);
+}
+.dark .dot[aria-current='true'] {
+  background: var(--neutral-white);
+}

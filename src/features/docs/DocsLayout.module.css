@@ -1,0 +1,160 @@
+.shell {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: var(--space-48);
+  align-items: start;
+  max-width: var(--container-lg);
+  margin-inline: auto;
+  padding-block: var(--section-md);
+  padding-inline: var(--page-padding);
+}
+.sidebar {
+  position: sticky;
+  top: calc(var(--navbar-height) + var(--space-24));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-24);
+  min-width: 0;
+}
+.toggle {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-8);
+  width: 100%;
+  min-height: 44px;
+  padding: var(--space-12) var(--space-16);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-field);
+  background: var(--neutral-white);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: var(--text-small);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+}
+.toggle:hover {
+  background: var(--ink-5);
+}
+.chevron {
+  transition: transform 0.2s ease;
+}
+.toggle[aria-expanded='true'] .chevron {
+  transform: rotate(90deg);
+}
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+.groupTitle {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--text-tiny);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.pageLink {
+  display: block;
+  padding: var(--space-8) 0;
+  font-size: var(--text-small);
+  font-weight: var(--weight-medium);
+  color: var(--text-primary);
+}
+.pageLink[aria-current='page'] {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-left: 1px solid var(--border-default);
+}
+.item a {
+  display: block;
+  padding: var(--space-8) var(--space-12);
+  margin-left: -1px;
+  border-left: 1px solid transparent;
+  font-size: var(--text-small);
+  color: var(--text-muted);
+}
+.item a:hover {
+  color: var(--text-primary);
+  background: var(--ink-5);
+}
+.item a[aria-current='true'] {
+  border-left-color: var(--watercourse);
+  color: var(--text-primary);
+  font-weight: var(--weight-medium);
+}
+
+.content {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-48);
+}
+/* Comfortable reading measure for prose only. Diagrams and tables use the full column,
+   which they need to stay legible. */
+.content :is(p, ul) {
+  max-width: 72ch;
+}
+/* Inline code in prose. The design system has no code style, so this is the one
+   addition, built from existing tokens. */
+.content code {
+  padding: 2px 6px;
+  border-radius: var(--radius-tag);
+  background: var(--ink-5);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.9em;
+  white-space: nowrap;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  padding-bottom: var(--space-32);
+  border-bottom: 1px solid var(--border-default);
+}
+.eyebrow {
+  font-size: var(--text-small);
+  font-weight: var(--weight-semibold);
+  color: var(--text-muted);
+}
+
+@media (max-width: 899px) {
+  .shell {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-24);
+  }
+  .sidebar {
+    position: static;
+    gap: var(--space-12);
+  }
+  .toggle {
+    display: flex;
+  }
+  /* Collapsed by default on small screens; the toggle controls it. */
+  .nav[data-collapsed='true'] {
+    display: none;
+  }
+  .nav {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-24);
+    padding: var(--space-16);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-card);
+    background: var(--neutral-white);
+  }
+  .content :is(p, ul) {
+    max-width: none;
+  }
+}

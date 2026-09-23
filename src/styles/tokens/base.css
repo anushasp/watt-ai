@@ -1,0 +1,5 @@
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;font-family:var(--font-body);font-size:var(--text-regular);line-height:var(--leading-body);color:var(--text-primary);background:var(--surface-page);-webkit-font-smoothing:antialiased}
+a{color:var(--link);text-decoration:none}a:hover{color:var(--watercourse)}
+button{font:inherit}
+.wt-input::placeholder{color:var(--ink-60)}.wt-input-alt::placeholder{color:var(--white-60)}

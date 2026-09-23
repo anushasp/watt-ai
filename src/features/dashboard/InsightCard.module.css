@@ -1,0 +1,28 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  padding: var(--space-24);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-card);
+  background: var(--neutral-white);
+  height: 100%;
+}
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-12);
+}
+.explanation {
+  padding: var(--space-16);
+  border-radius: var(--radius-field);
+  background: var(--ink-5);
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+  margin-top: auto;
+  padding-top: var(--space-8);
+}

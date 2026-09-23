@@ -1,0 +1,17 @@
+:root{
+--font-display:"Raleway",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+--font-body:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+--font-numeric:"Roboto",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+--weight-display:500;--weight-regular:400;--weight-medium:500;--weight-semibold:600;--weight-bold:700;
+/* Desktop scale (Typography collection · Desktop mode) */
+--text-h1:72px;--text-h2:52px;--text-h3:44px;--text-h4:36px;--text-h5:28px;--text-h6:22px;
+--text-large:22px;--text-medium:18px;--text-regular:16px;--text-small:14px;--text-tiny:12px;
+--text-stat:80px;
+--leading-heading:1.2;--leading-subheading:1.3;--leading-h6:1.4;--leading-body:1.5;
+--tracking-heading:-0.01em;
+}
+@media (max-width:767px){:root{
+/* Mobile mode */
+--text-h1:44px;--text-h2:40px;--text-h3:32px;--text-h4:24px;--text-h5:20px;--text-h6:18px;
+--text-large:18px;--text-medium:16px;--text-small:12px;--text-tiny:10px;--text-stat:56px;
+}}

@@ -1,0 +1,38 @@
+.frame {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  width: 100%;
+}
+.caption {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+.svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-16);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  font-size: var(--text-small);
+  color: var(--text-muted);
+}
+.swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}

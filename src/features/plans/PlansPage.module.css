@@ -1,0 +1,136 @@
+.notice {
+  display: flex;
+  gap: var(--space-12);
+  align-items: flex-start;
+  padding: var(--space-16);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-field);
+  background: var(--ink-5);
+}
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-32);
+  align-items: flex-end;
+  max-width: 100%;
+}
+.filterGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  /* A flex item defaults to min-width:auto, which would size this to the full tab strip
+     and push the page wider than the viewport. Let it shrink and scroll internally. */
+  min-width: 0;
+  max-width: 100%;
+}
+.filterLabel {
+  font-size: var(--text-small);
+  font-weight: var(--weight-semibold);
+}
+.select {
+  min-height: 44px;
+  padding: 0 var(--space-16);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-field);
+  background: var(--neutral-white);
+  font-family: var(--font-body);
+  font-size: var(--text-regular);
+  color: var(--text-primary);
+}
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  min-height: 44px;
+  font-size: var(--text-small);
+  cursor: pointer;
+}
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-16);
+  padding: var(--space-48);
+  border: 1px dashed var(--ink-35);
+  border-radius: var(--radius-card);
+  text-align: center;
+}
+.tableWrap {
+  overflow-x: auto;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-card);
+  background: var(--neutral-white);
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 640px;
+}
+.table th,
+.table td {
+  padding: var(--space-16);
+  text-align: left;
+  border-bottom: 1px solid var(--border-default);
+  font-size: var(--text-small);
+}
+.table thead th {
+  font-weight: var(--weight-semibold);
+  background: var(--neutral-lightest);
+}
+.table tbody th {
+  font-weight: var(--weight-regular);
+  color: var(--text-muted);
+}
+.table tbody td {
+  font-weight: var(--weight-medium);
+}
+.table tr:last-child th,
+.table tr:last-child td {
+  border-bottom: 0;
+}
+.assumptions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--space-48);
+  align-items: start;
+}
+.assumptionList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.drawerFacts {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 0;
+}
+.drawerFacts > div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-16);
+  padding: var(--space-12) 0;
+  border-bottom: 1px solid var(--border-default);
+}
+.drawerFacts dt {
+  color: var(--text-muted);
+  font-size: var(--text-small);
+}
+.drawerFacts dd {
+  margin: 0;
+  font-weight: var(--weight-medium);
+  font-size: var(--text-small);
+  text-align: right;
+}
+.confirmNotice {
+  display: flex;
+  gap: var(--space-12);
+  align-items: flex-start;
+  padding: var(--space-16);
+  border: 1px solid var(--neutral-darkest);
+  border-radius: var(--radius-field);
+  background: var(--ink-5);
+}

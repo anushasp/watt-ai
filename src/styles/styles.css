@@ -1,0 +1,8 @@
+/* Import order is load-bearing and mirrors the published design system's styles.css.
+   tokens/fig/fig-tokens.css is deliberately NOT vendored — see README. */
+@import './tokens/fonts.css';
+@import './tokens/colors.css';
+@import './tokens/typography.css';
+@import './tokens/spacing.css';
+@import './tokens/base.css';
+@import './tokens/a11y.css';

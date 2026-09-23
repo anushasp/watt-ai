@@ -1,0 +1,56 @@
+.fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-24);
+}
+.fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  margin: 0;
+  padding: var(--space-24);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-card);
+  background: var(--neutral-white);
+}
+.fieldset[data-invalid='true'] {
+  border-color: var(--feedback-error);
+}
+.legend {
+  padding: 0;
+  font-weight: var(--weight-semibold);
+  font-size: var(--text-regular);
+}
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+}
+.option {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  padding: var(--space-8) var(--space-16);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-tab);
+  cursor: pointer;
+  font-size: var(--text-small);
+}
+.option:hover {
+  background: var(--ink-5);
+}
+.option:has(input:checked) {
+  border-color: var(--neutral-darkest);
+  background: var(--ink-5);
+  font-weight: var(--weight-medium);
+}
+.option:has(input:focus-visible) {
+  outline: 2px solid var(--neutral-darkest);
+  outline-offset: 2px;
+}
+.errorSummary {
+  padding: var(--space-16);
+  border: 1px solid var(--feedback-error);
+  border-radius: var(--radius-field);
+  background: var(--feedback-error-bg);
+}

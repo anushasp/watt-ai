@@ -1,0 +1,32 @@
+# Dependencies
+node_modules
+
+# Build output
+dist
+dist-ssr
+*.tsbuildinfo
+
+# Test output
+coverage
+
+# Environment and secrets — never commit these
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+credentials.json
+
+# Editor and OS
+.DS_Store
+.idea
+.vscode
+*.swp
+
+# Local and generated
+*.local
+.vite
+*.log
+npm-debug.log*
+yarn-error.log*

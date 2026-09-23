@@ -1,0 +1,11 @@
+:root{
+--page-padding:64px;
+--section-lg:112px;--section-md:80px;--section-sm:48px;
+--container-lg:1280px;--container-md:1024px;--container-sm:768px;
+--max-w-xxs:320px;--max-w-xs:400px;--max-w-sm:480px;--max-w-md:560px;--max-w-lg:768px;--max-w-xl:1024px;
+--space-4:4px;--space-8:8px;--space-12:12px;--space-16:16px;--space-24:24px;--space-32:32px;--space-48:48px;--space-80:80px;
+--radius-card:16px;--radius-button:12px;--radius-field:12px;--radius-tabs:10px;--radius-tab:8px;--radius-arrow:8px;--radius-tag:6px;
+--border-width:1px;
+--navbar-height:72px;
+}
+@media (max-width:767px){:root{--page-padding:20px;--section-lg:64px;--section-md:48px;--section-sm:32px;--navbar-height:64px;}}

@@ -1,0 +1,111 @@
+.flow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-12);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.step {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  min-width: 0;
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-12) var(--space-16);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-field);
+  background: var(--neutral-white);
+}
+.label {
+  font-weight: var(--weight-semibold);
+  font-size: var(--text-small);
+}
+.detail {
+  font-size: var(--text-tiny);
+  color: var(--text-muted);
+  max-width: 24ch;
+}
+.arrow {
+  flex-shrink: 0;
+  color: var(--ink-35);
+}
+.step:last-child .arrow {
+  display: none;
+}
+
+/* Vertical stack, used for the layered architecture diagram. */
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.layer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.layerCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: 100%;
+  padding: var(--space-16) var(--space-24);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-card);
+  background: var(--neutral-white);
+  text-align: center;
+}
+.layerCard[data-tone='accent'] {
+  border-color: var(--watercourse);
+}
+.layerCard[data-tone='muted'] {
+  background: var(--surface-card-muted);
+}
+.layerName {
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  font-size: var(--text-h6);
+  letter-spacing: var(--tracking-heading);
+}
+.layerDetail {
+  font-size: var(--text-small);
+  color: var(--text-muted);
+}
+.connector {
+  width: 1px;
+  height: var(--space-24);
+  background: var(--ink-35);
+}
+.layer:last-child .connector {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .flow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .step {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .card {
+    width: 100%;
+  }
+  .detail {
+    max-width: none;
+  }
+  .arrow {
+    align-self: center;
+    transform: rotate(90deg);
+    margin-block: var(--space-4);
+  }
+}

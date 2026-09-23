@@ -1,0 +1,56 @@
+:root{
+/* Brand — "Watercourse" green scale (Primitives) */
+--watercourse-lightest:rgb(229,241,238);
+--watercourse-lighter:rgb(204,228,221);
+--watercourse-light:rgb(79,160,137);
+--watercourse:rgb(4,120,87);
+--watercourse-dark:rgb(3,96,69);
+--watercourse-darker:rgb(1,48,34);
+--watercourse-darkest:rgb(1,36,26);
+/* Neutrals */
+--neutral-white:rgb(255,255,255);
+--neutral-lightest:rgb(242,242,242);
+--neutral-lighter:rgb(216,216,217);
+--neutral-light:rgb(178,178,179);
+--neutral:rgb(128,128,128);
+--neutral-dark:rgb(77,77,77);
+--neutral-darker:rgb(26,26,27);
+--neutral-darkest:rgb(1,1,2);
+/* Transparent inks */
+--ink-5:rgba(1,1,2,0.05);--ink-10:rgba(1,1,2,0.1);--ink-15:rgba(1,1,2,0.15);--ink-20:rgba(1,1,2,0.2);--ink-35:rgba(1,1,2,0.35);--ink-60:rgba(1,1,2,0.6);
+--white-5:rgba(255,255,255,0.05);--white-10:rgba(255,255,255,0.1);--white-15:rgba(255,255,255,0.15);--white-20:rgba(255,255,255,0.2);--white-35:rgba(255,255,255,0.35);--white-60:rgba(255,255,255,0.6);
+
+/* Semantic — Color Schemes 1–4 */
+--scheme-1-bg:var(--neutral-white);--scheme-1-fg:var(--neutral-lightest);--scheme-1-text:var(--neutral-darkest);--scheme-1-border:var(--ink-15);--scheme-1-accent:var(--watercourse);
+--scheme-2-bg:var(--neutral-lightest);--scheme-2-fg:var(--neutral-white);--scheme-2-text:var(--neutral-darkest);--scheme-2-border:var(--ink-15);--scheme-2-accent:var(--watercourse);
+--scheme-3-bg:var(--neutral-lighter);--scheme-3-fg:var(--neutral-lightest);--scheme-3-text:var(--neutral-darkest);--scheme-3-border:var(--ink-15);--scheme-3-accent:var(--watercourse);
+--scheme-4-bg:var(--watercourse-darker);--scheme-4-fg:var(--watercourse-darkest);--scheme-4-text:var(--neutral-white);--scheme-4-border:var(--white-20);--scheme-4-accent:var(--neutral-white);
+
+/* Semantic aliases */
+--surface-page:var(--scheme-1-bg);
+--surface-section-alt:var(--scheme-2-bg);
+--surface-section-muted:var(--scheme-3-bg);
+--surface-section-dark:var(--scheme-4-bg);
+--surface-card:var(--neutral-white);
+--surface-card-muted:var(--neutral-lightest);
+--surface-card-dark:var(--watercourse-darkest);
+--surface-placeholder:var(--neutral-lighter);
+--text-primary:var(--neutral-darkest);
+--text-muted:var(--ink-60);
+--text-on-dark:var(--neutral-white);
+--text-on-dark-muted:var(--white-60);
+--border-default:var(--ink-15);
+--border-on-dark:var(--white-20);
+--action-primary:var(--watercourse);
+--action-primary-hover:var(--watercourse-dark);
+--action-primary-text:var(--neutral-white);
+--action-secondary:var(--ink-5);
+--action-secondary-hover:var(--ink-10);
+--action-secondary-on-dark:var(--white-15);
+--field-bg:var(--ink-5);
+--field-bg-on-dark:var(--white-15);
+--link:var(--neutral-darkest);
+/* Feedback — derived from the brand ramp, not new hues */
+--feedback-error:rgb(158,38,26);
+--feedback-error-bg:rgba(158,38,26,0.08);
+}
