@@ -19,6 +19,29 @@ export const BILL_STEP_LABELS: Readonly<Record<BillStep, string>> = {
   profile: 'Home Profile',
 };
 
+/**
+ * How each step is introduced in the page header, before the reader starts.
+ *
+ * Deliberately worded differently from BILL_STEP_LABELS and from each step's own heading:
+ * the overview explains what a step will ask of you, while the labels name it in the
+ * progress tracker. Two names for one step is the point — one is a description, the other
+ * is a marker.
+ */
+export const BILL_STEP_OVERVIEW: Readonly<Record<BillStep, { title: string; summary: string }>> = {
+  upload: {
+    title: 'Start with your bill',
+    summary: 'Drop in a PDF or a photo. The file is read in your browser and never sent anywhere.',
+  },
+  review: {
+    title: 'Check what we found',
+    summary: 'Every figure wattsAI read is shown back to you, and anything it got wrong you can correct.',
+  },
+  profile: {
+    title: 'Add your home details',
+    summary: 'A few questions about your home, so plans are priced against how you actually use energy.',
+  },
+};
+
 export function billStepPath(step: BillStep): string {
   return `${ROUTES.billAnalysis}?step=${step}`;
 }

@@ -12,14 +12,35 @@
   border: 1px solid var(--border-default);
   border-radius: var(--radius-card);
   background: var(--neutral-white);
+  /* A fieldset's default min-inline-size is min-content, which stops it shrinking inside a
+     grid track and can push the page wider than the viewport. */
+  min-width: 0;
 }
 .fieldset[data-invalid='true'] {
   border-color: var(--feedback-error);
 }
+
+/*
+ * Put the question inside the card.
+ *
+ * A fieldset's first legend is the "rendered legend": the browser lifts it out of flow and
+ * paints it across the top border, ignoring the fieldset's padding. That is why the
+ * question appeared to sit on top of the card edge rather than within it.
+ *
+ * Per the HTML rendering spec a legend only gets that treatment while it is in flow, so
+ * giving it a float opts out and it becomes an ordinary first child. The fieldset is a flex
+ * container, so the float itself is then ignored — flex items do not float — and the legend
+ * simply lays out as the first flex item. (If this fieldset is ever changed back to a block
+ * container, the float will need clearing.)
+ */
 .legend {
+  float: left;
+  width: 100%;
   padding: 0;
+  margin: 0;
   font-weight: var(--weight-semibold);
   font-size: var(--text-regular);
+  line-height: var(--leading-body);
 }
 .options {
   display: flex;

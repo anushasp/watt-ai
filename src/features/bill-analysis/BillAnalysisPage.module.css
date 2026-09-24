@@ -1,0 +1,13 @@
+/* The progress tracker and the step it is tracking, as one block. */
+.stepPanel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-48);
+}
+
+/* A rule under the tracker, so it reads as the header of the work below rather than as a
+   floating control. */
+.stepPanel > nav {
+  padding-bottom: var(--space-32);
+  border-bottom: 1px solid var(--border-default);
+}

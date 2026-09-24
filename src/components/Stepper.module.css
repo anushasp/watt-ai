@@ -1,47 +1,183 @@
+/**
+ * The bill-analysis progress track.
+ *
+ * Equal columns, with a rail running between the first and last marker centres. Everything
+ * that moves is `transform`, `opacity` or a colour — the markers never change size in a way
+ * that would reflow the row, so the labels underneath stay put while a step completes.
+ */
+
 .list {
-  display: flex;
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--steps, 3), minmax(0, 1fr));
   gap: var(--space-8);
   list-style: none;
   margin: 0;
   padding: 0;
-  flex-wrap: wrap;
 }
+
+/* --- the rail ---------------------------------------------------------------------- */
+
+/*
+ * Inset by half a column at each end so it starts and finishes at a marker's centre
+ * rather than at the edge of the control. With N equal columns the first centre sits at
+ * 1/2N of the width, which is exactly this inset.
+ */
+.rail {
+  position: absolute;
+  top: 18px;
+  left: calc(100% / (var(--steps, 3) * 2));
+  right: calc(100% / (var(--steps, 3) * 2));
+  height: 2px;
+  border-radius: 1px;
+  background: var(--ink-10);
+  overflow: hidden;
+}
+/*
+ * The one piece of motion that carries meaning here: how far through the flow you are.
+ * scaleX from the left, so it costs no layout, and slow enough to read as travelling
+ * rather than snapping.
+ */
+.railFill {
+  display: block;
+  height: 100%;
+  border-radius: 1px;
+  background: var(--watercourse);
+  transform-origin: left center;
+  transform: scaleX(var(--progress, 0));
+  transition: transform var(--duration-deliberate) var(--ease-emphasized);
+}
+
+/* --- steps -------------------------------------------------------------------------- */
+
 .item {
+  position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: var(--space-12);
-  padding: var(--space-12) var(--space-16);
-  border-radius: var(--radius-tab);
-  border: 1px solid var(--border-default);
-  background: var(--neutral-white);
-  color: var(--text-muted);
-  font-size: var(--text-small);
-  font-weight: var(--weight-medium);
+  gap: var(--space-8);
+  text-align: center;
+  min-width: 0;
 }
-.current {
-  border-color: var(--neutral-darkest);
-  color: var(--text-primary);
-}
-.done {
-  color: var(--text-primary);
-}
-.index {
+
+.marker {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
   border-radius: 50%;
-  background: var(--ink-5);
-  font-family: var(--font-numeric);
-  font-size: var(--text-tiny);
-  font-weight: var(--weight-bold);
+  border: 2px solid var(--ink-15);
+  /* Opaque, so the rail passes behind the marker rather than through it. */
+  background: var(--neutral-white);
+  color: var(--text-muted);
+  transition:
+    border-color var(--duration-normal) var(--ease-standard),
+    background-color var(--duration-normal) var(--ease-standard),
+    color var(--duration-normal) var(--ease-standard);
 }
-.current .index {
+.item[data-state='current'] .marker {
+  border-color: var(--neutral-darkest);
   background: var(--neutral-darkest);
   color: var(--neutral-white);
 }
-.done .index {
+.item[data-state='complete'] .marker {
+  border-color: var(--watercourse);
   background: var(--watercourse);
   color: var(--neutral-white);
+}
+
+/* Number and tick are both mounted and cross-fade, so completing a step is a transition
+   on one element rather than one element replacing another. */
+.number,
+.tick {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    opacity var(--duration-fast) var(--ease-standard),
+    transform var(--duration-normal) var(--ease-emphasized);
+}
+.number {
+  font-family: var(--font-numeric);
+  font-size: var(--text-small);
+  font-weight: var(--weight-bold);
+}
+.tick {
+  opacity: 0;
+  transform: scale(0.5);
+}
+.item[data-state='complete'] .number {
+  opacity: 0;
+  transform: scale(0.5);
+}
+.item[data-state='complete'] .tick {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* A slow outward ping on the step you are on. One element, 2.4s, opacity and scale only. */
+.ping {
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  border: 2px solid var(--neutral-darkest);
+  animation: ping 2.4s var(--ease-standard) infinite;
+}
+@keyframes ping {
+  0% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(1.45);
+  }
+}
+
+.label {
+  font-size: var(--text-small);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-body);
+  color: var(--text-muted);
+  transition: color var(--duration-normal) var(--ease-standard);
+  text-wrap: balance;
+}
+.item[data-state='current'] .label,
+.item[data-state='complete'] .label {
+  color: var(--text-primary);
+}
+.item[data-state='current'] .label {
+  font-weight: var(--weight-semibold);
+}
+
+@media (max-width: 767px) {
+  .label {
+    font-size: var(--text-tiny);
+  }
+}
+
+/* --- reduced motion ------------------------------------------------------------------ */
+
+/*
+ * The rail still shows how far through the flow you are, the tick still marks what is
+ * done and the colours still separate the three states — none of that depends on movement.
+ * Only the travelling and the ping go.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .railFill,
+  .marker,
+  .number,
+  .tick,
+  .label {
+    transition: none;
+  }
+  .ping {
+    animation: none;
+    display: none;
+  }
 }

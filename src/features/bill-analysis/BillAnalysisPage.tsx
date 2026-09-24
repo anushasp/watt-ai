@@ -3,10 +3,12 @@ import { useNavigate, useSearchParams } from 'react-router';
 import { Heading, Section, SectionTitle, Text } from '@/ds';
 import { Stepper } from '@/components/Stepper';
 import { BILL_STEPS, BILL_STEP_LABELS, ROUTES, type BillStep } from '@/app/routes';
+import { StepOverview } from './StepOverview';
 import { useSession } from '@/state/SessionContext';
 import { UploadStep } from './UploadStep';
 import { ReviewStep } from './ReviewStep';
 import { HomeProfileStep } from './HomeProfileStep';
+import styles from './BillAnalysisPage.module.css';
 
 function parseStep(raw: string | null): BillStep {
   return BILL_STEPS.includes(raw as BillStep) ? (raw as BillStep) : 'upload';
@@ -66,19 +68,25 @@ export function BillAnalysisPage() {
               one at a time.
             </Text>
           </div>
-          <Stepper
-            steps={BILL_STEPS.map((s) => ({ id: s, label: BILL_STEP_LABELS[s] }))}
-            currentIndex={currentIndex}
-          />
+          <StepOverview currentIndex={currentIndex} />
         </div>
       </Section>
 
       <Section scheme={2} size="md">
-        {step === 'upload' ? <UploadStep onAnalyzed={() => goTo('review')} /> : null}
-        {step === 'review' ? <ReviewStep onConfirm={() => goTo('profile')} /> : null}
-        {step === 'profile' ? (
-          <HomeProfileStep onBack={() => goTo('review')} onSubmit={() => void navigate(ROUTES.plans)} />
-        ) : null}
+        {/* The tracker sits with the work it is tracking, so moving forward and the rail
+            filling are the same event in the same place. One flow container, because
+            Section's own 80px rhythm would read as two unrelated blocks. */}
+        <div className={styles.stepPanel}>
+          <Stepper
+            steps={BILL_STEPS.map((s) => ({ id: s, label: BILL_STEP_LABELS[s] }))}
+            currentIndex={currentIndex}
+          />
+          {step === 'upload' ? <UploadStep onAnalyzed={() => goTo('review')} /> : null}
+          {step === 'review' ? <ReviewStep onConfirm={() => goTo('profile')} /> : null}
+          {step === 'profile' ? (
+            <HomeProfileStep onBack={() => goTo('review')} onSubmit={() => void navigate(ROUTES.plans)} />
+          ) : null}
+        </div>
       </Section>
 
       <Section scheme={4} size="md">
