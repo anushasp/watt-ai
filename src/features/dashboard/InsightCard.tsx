@@ -29,7 +29,19 @@ export function InsightCard({ insight, onDismiss }: InsightCardProps) {
     <article className={styles.card}>
       <div className={styles.head}>
         <Icon name={insight.icon as IconName} size={32} />
-        <Tag>{SEVERITY_LABEL[insight.severity]}</Tag>
+        <div className={styles.headEnd}>
+          <Tag>{SEVERITY_LABEL[insight.severity]}</Tag>
+          {/* Sits in the header row rather than floating over the card, so it can never
+              land on top of the title however narrow the card gets. */}
+          <button
+            type="button"
+            className={styles.dismiss}
+            onClick={onDismiss}
+            aria-label={`Dismiss insight: ${insight.title}`}
+          >
+            <Icon name="Close" size={16} />
+          </button>
+        </div>
       </div>
       <Heading level={4} scale="h6">
         {insight.title}
@@ -38,11 +50,15 @@ export function InsightCard({ insight, onDismiss }: InsightCardProps) {
         {insight.finding}
       </Text>
 
-      {expanded ? (
-        <div className={styles.explanation} id={`${insight.id}-explanation`}>
+      <div
+        className={styles.explanationWrap}
+        data-expanded={expanded ? 'true' : 'false'}
+        id={`${insight.id}-explanation`}
+      >
+        <div className={styles.explanation}>
           <Text size="small">{insight.explanation}</Text>
         </div>
-      ) : null}
+      </div>
 
       <div className={styles.actions}>
         <Button
@@ -56,9 +72,6 @@ export function InsightCard({ insight, onDismiss }: InsightCardProps) {
         </Button>
         <Button size="small" onClick={takeAction}>
           {insight.actionLabel}
-        </Button>
-        <Button variant="link" size="small" trailingIcon="Close" onClick={onDismiss}>
-          Dismiss
         </Button>
       </div>
     </article>

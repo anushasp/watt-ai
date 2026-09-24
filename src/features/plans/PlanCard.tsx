@@ -1,4 +1,4 @@
-import { Button, CheckListItem, Heading, Tag, Text } from '@/ds';
+import { AnimatedNumber, Button, CheckListItem, Heading, Tag, Text } from '@/ds';
 import { formatMoney, formatRate } from '@/services/money';
 import { PLAN_BADGE_LABELS, type PlanEstimate } from '@/types';
 import { termLabel } from './planFilters';
@@ -48,16 +48,29 @@ export function PlanCard({
       </div>
 
       <div className={styles.price}>
-        <span className={styles.priceValue}>{formatMoney(estimate.estimatedMonthly, { cents: false })}</span>
+        {/* No count-up on reveal: a grid of plan cards all counting at once would be noise.
+            It does transition when the estimate changes, which is when it means something. */}
+        <span className={styles.priceValue}>
+          <AnimatedNumber
+            to={estimate.estimatedMonthly}
+            format={(v) => formatMoney(v, { cents: false })}
+            countOnReveal={false}
+          />
+        </span>
         <Text as="span" size="small" muted>
           estimated a month
         </Text>
       </div>
 
       <p className={styles.savings} data-positive={saves ? 'true' : undefined}>
-        {saves
-          ? `${formatMoney(estimate.annualSavingsVsCurrent, { cents: false })} a year less than ${currentPlanName}`
-          : `${formatMoney(Math.abs(estimate.annualSavingsVsCurrent), { cents: false })} a year more than ${currentPlanName}`}
+        <span>
+          <AnimatedNumber
+            to={Math.abs(estimate.annualSavingsVsCurrent)}
+            format={(v) => formatMoney(v, { cents: false })}
+            countOnReveal={false}
+          />
+          {` a year ${saves ? 'less' : 'more'} than ${currentPlanName}`}
+        </span>
         <span className={styles.basis}>Est. savings vs your current plan</span>
       </p>
 

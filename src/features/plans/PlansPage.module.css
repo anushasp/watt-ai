@@ -7,6 +7,70 @@
   border-radius: var(--radius-field);
   background: var(--ink-5);
 }
+/*
+ * Filters, count and cards as one block.
+ *
+ * Section's own rhythm puts 80px between its children, which is right between sections of
+ * a page and wrong between a control and the thing it controls. Grouping the three in one
+ * flow container opts them out of it, so a filter sits a couple of dozen pixels above the
+ * results it changes instead of most of a screen.
+ */
+.browse {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-24);
+}
+
+/* The count reads as the join between the controls above it and the cards below, so it
+   keeps a hairline rather than floating in the gap. */
+.resultsBar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding-top: var(--space-16);
+  border-top: 1px solid var(--border-default);
+}
+.count {
+  color: var(--text-primary);
+}
+
+/*
+ * Plan cards entering and leaving as the filters change.
+ *
+ * Opacity and a 4px lift only — the grid is already reflowing underneath, and adding
+ * movement to that reads as the page lurching. An exiting card holds its cell until the
+ * fade finishes, so the remaining cards settle once rather than shuffling mid-animation.
+ */
+.cardSlot {
+  height: 100%;
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--duration-normal) var(--ease-standard),
+    transform var(--duration-normal) var(--ease-standard);
+}
+.cardSlot[data-phase='entering'] {
+  opacity: 0;
+  transform: translateY(4px);
+}
+.cardSlot[data-phase='exiting'] {
+  opacity: 0;
+  transform: scale(0.98);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Exiting cards are already dropped outright by useTransitionList under reduced motion;
+     this makes sure an entering one is never left mid-fade. */
+  .cardSlot,
+  .cardSlot[data-phase='entering'],
+  .cardSlot[data-phase='exiting'] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
 .filters {
   display: flex;
   flex-wrap: wrap;
@@ -50,7 +114,7 @@
   flex-direction: column;
   align-items: center;
   gap: var(--space-16);
-  padding: var(--space-48);
+  padding: var(--space-48) var(--space-24);
   border: 1px dashed var(--ink-35);
   border-radius: var(--radius-card);
   text-align: center;

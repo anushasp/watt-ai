@@ -20,6 +20,7 @@ import { useSession } from '@/state/SessionContext';
 import { copilotPath, ROUTES } from '@/app/routes';
 import { TWELVE_MONTH_COST } from '@/mocks/energy';
 import { PLAN_BADGE_LABELS } from '@/types';
+import { useTransitionList } from '@/hooks/useTransitionList';
 import { PlanCard } from './PlanCard';
 import { applyFilters, parseFilters, SORT_LABELS, termLabel } from './planFilters';
 import styles from './PlansPage.module.css';
@@ -44,6 +45,9 @@ export function PlansPage() {
 
   const filters = parseFilters(params);
   const results = useMemo(() => applyFilters(estimates, filters), [estimates, filters]);
+  // Plans that no longer match stay mounted for one short fade rather than vanishing on
+  // the same tick the checkbox was ticked.
+  const cards = useTransitionList(results, (e) => e.plan.id, 200);
   const recommendedId = estimates[0]?.plan.id ?? null;
 
   const compareIds = (params.get('compare') ?? '').split(',').filter(Boolean);
@@ -90,94 +94,113 @@ export function PlansPage() {
         </div>
       </Section>
 
-      <Section scheme={3} size="md">
+      {/* Filters and results share one section on purpose: a filter and the list it
+          changes belong together, and two sections put roughly 300px of padding between
+          the checkbox and the first card it affects. */}
+      <Section scheme={2} size="md">
         <SectionTitle
-          tagline="Filters"
+          tagline="Plans"
           heading="Refine plans"
           text="Narrow the list, then compare what is left. Filters are kept in the address bar, so a link shares exactly what you see."
           level={2}
           align="left"
         />
-        <div className={styles.filters}>
-          <div className={styles.filterGroup}>
-            <span className={styles.filterLabel} id="sort-label">
-              Sort by
-            </span>
-            <Tabs
-              label="Sort plans"
-              options={SORT_OPTIONS}
-              value={filters.sort}
-              onChange={(v) => update({ sort: v })}
-            />
-          </div>
-          <div className={styles.filterGroup}>
-            <label className={styles.filterLabel} htmlFor="term-select">
-              Contract length
-            </label>
-            <select
-              id="term-select"
-              className={styles.select}
-              value={filters.maxTermMonths === null ? 'any' : String(filters.maxTermMonths)}
-              onChange={(e) => update({ term: e.target.value === 'any' ? null : e.target.value })}
-            >
-              {TERM_OPTIONS.map((o) => (
-                <option key={o.value} value={o.value}>
-                  {o.label}
-                </option>
-              ))}
-            </select>
-          </div>
-          <label className={styles.checkbox}>
-            <input
-              type="checkbox"
-              checked={filters.renewableOnly}
-              onChange={(e) => update({ green: e.target.checked ? '1' : null })}
-            />
-            <span>100 percent renewable only</span>
-          </label>
-        </div>
-        <Text size="small" muted role="status">
-          Showing {results.length} of {estimates.length} plans. Savings are measured against{' '}
-          {currentPlanName} at {formatMoney(currentAnnual, { cents: false })} a year.
-        </Text>
-      </Section>
 
-      <Section scheme={2}>
-        <SectionTitle
-          tagline="Plans"
-          heading={results.length > 0 ? 'Plans matched to your home' : 'No plans match those filters'}
-          text={
-            results.length > 0
-              ? 'Every price here is an estimate built from your usage and your home profile.'
-              : 'Widen the contract length or turn off the renewable filter to see more.'
-          }
-          level={2}
-        />
-        {results.length > 0 ? (
-          <Grid min={320}>
-            {results.map((estimate) => (
-              <PlanCard
-                key={estimate.plan.id}
-                estimate={estimate}
-                recommended={estimate.plan.id === recommendedId && filters.sort === 'recommended'}
-                currentPlanName={currentPlanName}
-                compareChecked={compareIds.includes(estimate.plan.id)}
-                onCompareChange={(checked) => toggleCompare(estimate.plan.id, checked)}
-                onViewDetails={() => update({ plan: estimate.plan.id })}
-                onAsk={() => void navigate(copilotPath({ planId: estimate.plan.id }))}
-                onChoose={() => setChosenPlanId(estimate.plan.id)}
+        {/* One flow container, so the section's 80px rhythm does not apply between the
+            controls, the count and the cards. */}
+        <div className={styles.browse}>
+          <div className={styles.filters}>
+            <div className={styles.filterGroup}>
+              <span className={styles.filterLabel} id="sort-label">
+                Sort by
+              </span>
+              <Tabs
+                label="Sort plans"
+                options={SORT_OPTIONS}
+                value={filters.sort}
+                onChange={(v) => update({ sort: v })}
               />
-            ))}
-          </Grid>
-        ) : (
-          <div className={styles.empty}>
-            <Icon name="Compare" size={48} />
-            <Text size="medium">Nothing matches those filters yet.</Text>
-            <Button variant="secondary" onClick={() => setParams(new URLSearchParams())}>
-              Clear all filters
-            </Button>
+            </div>
+            <div className={styles.filterGroup}>
+              <label className={styles.filterLabel} htmlFor="term-select">
+                Contract length
+              </label>
+              <select
+                id="term-select"
+                className={styles.select}
+                value={filters.maxTermMonths === null ? 'any' : String(filters.maxTermMonths)}
+                onChange={(e) => update({ term: e.target.value === 'any' ? null : e.target.value })}
+              >
+                {TERM_OPTIONS.map((o) => (
+                  <option key={o.value} value={o.value}>
+                    {o.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <label className={styles.checkbox}>
+              <input
+                type="checkbox"
+                checked={filters.renewableOnly}
+                onChange={(e) => update({ green: e.target.checked ? '1' : null })}
+              />
+              <span>100 percent renewable only</span>
+            </label>
           </div>
-        )}
+
+          <div className={styles.resultsBar}>
+            {/* The count is the live region: it is the one line that changes when a filter
+                does, and it sits directly between the controls and the cards. */}
+            <Text as="p" size="small" weight={600} role="status" className={styles.count}>
+              Showing {results.length} of {estimates.length} plans
+            </Text>
+            <Text as="p" size="small" muted>
+              Every price is an estimate built from your usage and home profile. Savings are
+              measured against {currentPlanName} at {formatMoney(currentAnnual, { cents: false })} a
+              year.
+            </Text>
+          </div>
+
+          {cards.length > 0 ? (
+            <Grid min={320}>
+              {cards.map(({ key, item: estimate, phase }) => (
+                <div
+                  key={key}
+                  className={styles.cardSlot}
+                  data-phase={phase}
+                  // A card on its way out is a picture of a plan that no longer matches.
+                  // It must not be reachable by tab or read out while it fades.
+                  aria-hidden={phase === 'exiting' ? true : undefined}
+                  inert={phase === 'exiting'}
+                >
+                  <PlanCard
+                    estimate={estimate}
+                    recommended={estimate.plan.id === recommendedId && filters.sort === 'recommended'}
+                    currentPlanName={currentPlanName}
+                    compareChecked={compareIds.includes(estimate.plan.id)}
+                    onCompareChange={(checked) => toggleCompare(estimate.plan.id, checked)}
+                    onViewDetails={() => update({ plan: estimate.plan.id })}
+                    onAsk={() => void navigate(copilotPath({ planId: estimate.plan.id }))}
+                    onChoose={() => setChosenPlanId(estimate.plan.id)}
+                  />
+                </div>
+              ))}
+            </Grid>
+          ) : (
+            <div className={styles.empty}>
+              <Icon name="Compare" size={48} />
+              <Heading level={3} scale="h5">
+                No plans match those filters
+              </Heading>
+              <Text size="medium">
+                Widen the contract length or turn off the renewable filter to see more.
+              </Text>
+              <Button variant="secondary" onClick={() => setParams(new URLSearchParams())}>
+                Clear all filters
+              </Button>
+            </div>
+          )}
+        </div>
       </Section>
 
       <Section scheme={1}>

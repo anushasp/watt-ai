@@ -6,7 +6,11 @@
   border: 1px solid var(--border-default);
   border-radius: var(--radius-card);
   background: var(--neutral-white);
-  height: 100%;
+  min-height: 100%;
+  transition: border-color var(--duration-fast) var(--ease-standard);
+}
+.card:hover {
+  border-color: var(--ink-35);
 }
 .head {
   display: flex;
@@ -14,11 +18,93 @@
   justify-content: space-between;
   gap: var(--space-12);
 }
+/* Severity tag and the close control travel together at the end of the header row. */
+.headEnd {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  flex-shrink: 0;
+}
+
+/*
+ * Icon-only close.
+ *
+ * The icon is 16px but the hit area is 36px, which is the part that has to be comfortable.
+ * It sits in the header row rather than floating over the card, so it cannot land on the
+ * title however narrow the card gets; the negative margins let it reach the card's corner
+ * without adding height to the row or pushing the tag out of line.
+ *
+ * The focus ring comes from the global :focus-visible rule in tokens/a11y.css.
+ */
+.dismiss {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin: -6px -6px -6px 0;
+  flex-shrink: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-tag);
+  background: transparent;
+  color: var(--ink-60);
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+}
+.dismiss:hover {
+  background: var(--ink-5);
+  color: var(--text-primary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dismiss {
+    transition: none;
+  }
+}
+/* Height animation without JS measurement.
+   grid-template-rows: 0fr -> 1fr is the tidier technique, but several Chromium builds
+   decline to interpolate between fr values and freeze at the start value, leaving the
+   panel permanently closed. max-height always animates; the cap is generous enough for
+   the longest explanation and the content fades in alongside, so the easing reads
+   correctly even when the content is shorter than the cap.
+   The wrapper stays mounted, which also fixes aria-controls pointing at a node that only
+   existed while expanded. */
+.explanationWrap {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  visibility: hidden;
+  flex-shrink: 0;
+  transition:
+    max-height var(--duration-slow) var(--ease-standard),
+    opacity var(--duration-fast) var(--ease-standard),
+    visibility 0s linear var(--duration-slow);
+}
+.explanationWrap[data-expanded='true'] {
+  max-height: 32rem;
+  opacity: 1;
+  visibility: visible;
+  transition:
+    max-height var(--duration-slow) var(--ease-enter),
+    opacity var(--duration-normal) var(--ease-enter) 60ms,
+    visibility 0s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .explanationWrap {
+    transition: none;
+  }
+}
+
 .explanation {
   padding: var(--space-16);
   border-radius: var(--radius-field);
   background: var(--ink-5);
 }
+
 .actions {
   display: flex;
   flex-wrap: wrap;

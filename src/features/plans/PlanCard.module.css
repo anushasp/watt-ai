@@ -8,9 +8,50 @@
   border-radius: var(--radius-card);
   background: var(--neutral-white);
   height: 100%;
+  transition:
+    border-color var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard);
 }
+/* A plan card is a choice, so it answers the pointer. One pixel, no shadow. */
+.card:hover {
+  border-color: var(--ink-35);
+  transform: translateY(-1px);
+}
+.card[data-recommended='true']:hover {
+  border-color: var(--watercourse-dark);
+}
+/* The recommended card earns its emphasis once, on arrival: the border warms from the
+   default hairline to the brand green. No pulse, no glow — prominence through timing. */
 .card[data-recommended='true'] {
   border-color: var(--watercourse);
+  animation: recommend 400ms var(--ease-emphasized) both;
+}
+@keyframes recommend {
+  from {
+    border-color: var(--border-default);
+  }
+}
+.card[data-recommended='true'] .tags > :first-child {
+  animation: tagIn var(--duration-slow) var(--ease-enter) 120ms both;
+}
+@keyframes tagIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card[data-recommended='true'],
+  .card[data-recommended='true'] .tags > :first-child {
+    animation: none;
+  }
+  .card {
+    transition: none;
+  }
+  .card:hover {
+    transform: none;
+  }
 }
 .tags {
   display: flex;

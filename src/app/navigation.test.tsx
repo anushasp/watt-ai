@@ -125,3 +125,69 @@ describe('ask wattsAI hand-off', () => {
     expect(await screen.findByRole('complementary', { name: /conversation context/i })).toBeInTheDocument();
   });
 });
+
+describe('scroll position on navigation', () => {
+  /** jsdom never scrolls, so the call itself is the observable behaviour. */
+  function watchScroll() {
+    const calls: { top: number }[] = [];
+    const original = window.scrollTo;
+    window.scrollTo = ((options: ScrollToOptions) => {
+      calls.push({ top: options?.top ?? 0 });
+    }) as typeof window.scrollTo;
+    return { calls, restore: () => { window.scrollTo = original; } };
+  }
+
+  it('opens a page chosen from the main nav at the top', async () => {
+    const user = userEvent.setup();
+    const { calls, restore } = watchScroll();
+    try {
+      renderApp('/');
+      const nav = screen.getByRole('navigation', { name: 'Main' });
+      await user.click(within(nav).getByRole('link', { name: 'Plans' }));
+      await waitFor(() => expect(calls).toContainEqual({ top: 0 }));
+    } finally {
+      restore();
+    }
+  });
+
+  it('does not scroll on the first render, which is a page load rather than a navigation', async () => {
+    const { calls, restore } = watchScroll();
+    try {
+      renderApp('/plans');
+      await screen.findByText(/showing \d+ of \d+ plans/i);
+      expect(calls).toHaveLength(0);
+    } finally {
+      restore();
+    }
+  });
+
+  it('leaves the page where it is when a filter changes', async () => {
+    // The trap that rules out react-router's <ScrollRestoration />: it keys off
+    // location.key, so ticking a filter would throw the reader back to the top of the
+    // page, away from the results they were looking at.
+    const user = userEvent.setup();
+    const { calls, restore } = watchScroll();
+    try {
+      renderApp('/plans');
+      await user.click(await screen.findByRole('checkbox', { name: /100 percent renewable only/i }));
+      await waitFor(() => expect(screen.getByText(/showing \d+ of \d+ plans/i)).toHaveTextContent(/showing 2 of 6/i));
+      expect(calls).toHaveLength(0);
+    } finally {
+      restore();
+    }
+  });
+
+  it('leaves the page where it is when a dashboard tab changes', async () => {
+    const user = userEvent.setup();
+    const { calls, restore } = watchScroll();
+    try {
+      renderApp('/dashboard');
+      const tabs = await screen.findByRole('tablist', { name: /dashboard views/i });
+      await user.click(within(tabs).getByRole('tab', { name: /usage/i }));
+      await waitFor(() => expect(within(tabs).getByRole('tab', { name: /usage/i })).toHaveAttribute('aria-selected', 'true'));
+      expect(calls).toHaveLength(0);
+    } finally {
+      restore();
+    }
+  });
+});

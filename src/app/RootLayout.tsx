@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Outlet, useLocation } from 'react-router';
 import { Footer, Navbar } from '@/ds';
+import { useScrollToTopOnNavigate } from '@/hooks/useScrollToTopOnNavigate';
 import { FOOTER_COLUMNS, NAV_ITEMS } from './routes';
 import styles from './RootLayout.module.css';
 
@@ -18,6 +19,9 @@ const TITLES: Record<string, string> = {
 export function RootLayout() {
   const location = useLocation();
   const announcerRef = useRef<HTMLDivElement>(null);
+
+  // A new page opens at its top, whatever the reader had scrolled past on the last one.
+  useScrollToTopOnNavigate();
 
   useEffect(() => {
     const title = TITLES[location.pathname] ?? 'Page not found — wattsAI';
