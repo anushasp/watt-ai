@@ -14,8 +14,9 @@
   text-align: center;
   cursor: pointer;
   transition:
-    background-color 0.15s ease,
-    border-color 0.15s ease;
+    background-color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard);
 }
 .zone:hover {
   background: var(--ink-5);
@@ -24,12 +25,15 @@
   border-color: var(--watercourse);
   border-style: solid;
   background: var(--watercourse-lightest);
+  transform: scale(1.01);
 }
 .invalid {
   border-color: var(--feedback-error);
   background: var(--feedback-error-bg);
 }
+/* The selected-file panel replaces the dropzone, so it enters rather than appears. */
 .filled {
+  animation: fileIn var(--duration-normal) var(--ease-enter) both;
   display: flex;
   flex-direction: column;
   gap: var(--space-24);
@@ -69,4 +73,55 @@
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+@keyframes fileIn {
+  from {
+    opacity: 0;
+    transform: translateY(var(--motion-rise));
+  }
+}
+
+/* Indeterminate progress while the file is read and then analyzed. The colour shift marks
+   the handover from reading to analyzing, so the two phases are distinguishable. */
+.progress {
+  position: relative;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--ink-10);
+  overflow: hidden;
+}
+.progress::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  width: 35%;
+  border-radius: 1px;
+  background: var(--neutral-darkest);
+  animation: indeterminate 1.5s var(--ease-standard) infinite;
+}
+.progress[data-phase='analyzing']::after {
+  background: var(--watercourse);
+}
+@keyframes indeterminate {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(340%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .filled {
+    animation: none;
+  }
+  .dragging {
+    transform: none;
+  }
+  .progress::after {
+    animation: none;
+    width: 100%;
+    opacity: 0.4;
+  }
 }

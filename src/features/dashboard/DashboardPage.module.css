@@ -37,3 +37,9 @@
   background: var(--surface-card-dark);
   color: var(--text-on-dark);
 }
+
+/* A Reveal wrapper sits between the grid and a full-height card, so it has to pass the
+   height through or the cards in a row stop matching. */
+.fill {
+  height: 100%;
+}

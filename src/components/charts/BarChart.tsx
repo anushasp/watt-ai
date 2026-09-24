@@ -1,5 +1,6 @@
 import { ChartFrame, type ChartDatum, type LegendEntry } from './ChartFrame';
 import { CHART_ACCENT, CHART_INK, bandScale, linearScale, niceTicks } from './scales';
+import chartMotion from './chartMotion.module.css';
 
 const W = 640;
 const H = 320;
@@ -91,6 +92,8 @@ export function BarChart({
               return (
                 <rect
                   key={s.label}
+                  className={chartMotion.growBar}
+                  style={{ ['--bar' as string]: i }}
                   x={rectX}
                   y={rectY}
                   width={Math.max(0, innerWidth - (mode === 'grouped' ? 2 : 0))}
@@ -164,6 +167,8 @@ export function HorizontalBarChart({
               {item.label}
             </text>
             <rect
+              className={chartMotion.growBarH}
+              style={{ ['--bar' as string]: i }}
               x={left}
               y={band(i)}
               width={Math.max(0, barWidth)}

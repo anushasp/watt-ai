@@ -11,6 +11,7 @@ import {
 } from '@/mocks/energy';
 import { formatKwh, formatMoney } from '@/services/money';
 import { CHART_ACCENT, CHART_INK } from '@/components/charts/scales';
+import { EvOptimizationDemo } from './EvOptimizationDemo';
 import styles from './DashboardTabs.module.css';
 
 export type DashboardTab = 'overview' | 'usage' | 'savings' | 'devices';
@@ -173,6 +174,7 @@ function DevicesPanel() {
         title="EV, solar, battery and appliances"
         text="How the big loads in your home behave across a day."
       />
+      <EvOptimizationDemo />
       <div className={styles.grid}>
         <BarChart
           title="EV charging by start hour"

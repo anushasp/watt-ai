@@ -1,0 +1,5 @@
+/* A Reveal wrapper sits between the grid and a full-height card, so it must pass the
+   height through or the cards stop matching heights in their row. */
+.fill {
+  height: 100%;
+}

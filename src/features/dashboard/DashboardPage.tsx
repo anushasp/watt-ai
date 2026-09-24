@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { Button, Grid, Heading, Icon, Section, SectionTitle, StatCard, Tabs, Text } from '@/ds';
 import { DemoBanner } from '@/components/DemoBanner';
+import { Reveal, stagger } from '@/components/Reveal';
 import { Sparkline } from '@/components/charts/Sparkline';
 import { EnergyFlowDiagram } from '@/components/charts/EnergyFlowDiagram';
-import { ENERGY_FLOW } from '@/mocks/energy';
+import { EnergyFlow } from '@/components/charts/EnergyFlow';
+import { ENERGY_FLOW, LIVE_FLOW } from '@/mocks/energy';
 import { INSIGHTS } from '@/mocks/insights';
 import { flowBalance } from '@/services/energy';
 import { changeVsLastMonth, describeComparison, formatKwh, formatMoney, formatRate } from '@/services/money';
@@ -64,23 +66,41 @@ export function DashboardPage() {
           align="left"
         />
         <Grid min={240}>
-          <StatCard tone="light" value="$4.12" label="Cost today" detail="Partial day, so far">
+          <StatCard
+            tone="light"
+            value="$4.12"
+            countTo={4.12}
+            formatValue={(v) => formatMoney(v)}
+            label="Cost today"
+            detail="Partial day, so far"
+          >
             <Sparkline values={[8.1, 8.7, 9.4, 8.5, 7.9, 9.0, 4.1]} label="Daily cost over the last seven days" />
           </StatCard>
           <StatCard
             tone="light"
             value={formatMoney(bill?.total ?? monthly, { cents: false })}
+            countTo={bill?.total ?? monthly}
+            formatValue={(v) => formatMoney(v, { cents: false })}
             label="Projected bill"
             detail={monthComparison ? describeComparison(monthComparison) : 'For the current period'}
           >
             <Sparkline values={[232, 218, 242, 281, 289, 268, 273]} label="Bill totals over recent periods" />
           </StatCard>
-          <StatCard tone="light" value="28.4" label="Energy used today, kWh" detail="Measured over the day so far">
+          <StatCard
+            tone="light"
+            value="28.4"
+            countTo={ENERGY_FLOW.todayKwh}
+            formatValue={(v) => v.toFixed(1)}
+            label="Energy used today, kWh"
+            detail="Measured over the day so far"
+          >
             <Sparkline values={[44, 48, 51, 46, 43, 49, 28]} label="Daily energy over the last seven days" />
           </StatCard>
           <StatCard
             tone="light"
             value={formatMoney(Math.max(0, recommended?.annualSavingsVsCurrent ?? 0) / 12, { cents: false })}
+            countTo={Math.max(0, recommended?.annualSavingsVsCurrent ?? 0) / 12}
+            formatValue={(v) => formatMoney(v, { cents: false })}
             label="Projected monthly saving"
             detail={`If you moved to ${recommended?.plan.name ?? 'the recommended plan'}`}
           >
@@ -100,10 +120,16 @@ export function DashboardPage() {
           text={`Simulated instantaneous power. ${flow.inKw} kW flows in and the same ${flow.outKw} kW flows out, because power into a home has to go somewhere.`}
           level={2}
         />
+        <EnergyFlow
+          {...LIVE_FLOW}
+          title="Your home right now"
+          description="Solar and the grid are feeding the house while the battery covers the rest and the car charges. The house itself draws 4.3 kW and the car another 1.9 kW. Arrows show direction; thicker and faster means more power."
+        />
         <EnergyFlowDiagram flow={ENERGY_FLOW} />
         <Text size="small" muted>
-          Figures in this diagram are kilowatts, a rate of flow at this moment. Energy over a period
-          is measured in kilowatt hours, and today that is {formatKwh(ENERGY_FLOW.todayKwh)}.
+          The second diagram breaks the same moment down by every source and every load. Figures in
+          both are kilowatts, a rate of flow at this moment. Energy over a period is measured in
+          kilowatt hours, and today that is {formatKwh(ENERGY_FLOW.todayKwh)}.
         </Text>
       </Section>
 
@@ -137,15 +163,16 @@ export function DashboardPage() {
         />
         {visibleInsights.length > 0 ? (
           <Grid min={300}>
-            {visibleInsights.map((insight) => (
-              <InsightCard
-                key={insight.id}
-                insight={insight}
-                onDismiss={() => {
-                  dispatch({ type: 'DISMISS_INSIGHT', id: insight.id });
-                  setUndoId(insight.id);
-                }}
-              />
+            {visibleInsights.map((insight, i) => (
+              <Reveal key={insight.id} delay={stagger(i)} className={styles.fill}>
+                <InsightCard
+                  insight={insight}
+                  onDismiss={() => {
+                    dispatch({ type: 'DISMISS_INSIGHT', id: insight.id });
+                    setUndoId(insight.id);
+                  }}
+                />
+              </Reveal>
             ))}
           </Grid>
         ) : (

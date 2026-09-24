@@ -13,17 +13,32 @@
   cursor: pointer;
   text-decoration: none;
   transition:
-    background-color 0.15s ease,
-    color 0.15s ease,
-    transform 0.1s ease;
+    background-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard),
+    transform var(--duration-instant) var(--ease-standard);
 }
 .button:disabled,
 .button[aria-disabled='true'] {
   opacity: 0.4;
   cursor: default;
 }
+/* A button lifts a hair on hover and settles under the press. The design system keeps
+   box-shadow for focus rings only, so elevation here is carried by movement, not by a
+   shadow. Both steps are at instant/fast timing — a pointer must never wait for a button. */
+.button:not(:disabled):not([aria-disabled='true']):hover {
+  transform: translateY(-1px);
+}
 .button:not(:disabled):active {
-  transform: scale(0.98);
+  transform: translateY(0) scale(0.98);
+}
+
+/* The trailing chevron leans in the direction it takes you. Only ever the trailing one:
+   a leading icon is a label, not a direction. */
+.button :global(svg) {
+  transition: transform var(--duration-fast) var(--ease-standard);
+}
+.button:not(:disabled):hover :global(svg):last-child {
+  transform: translateX(2px);
 }
 .fullWidth {
   display: flex;
@@ -76,6 +91,21 @@
 .link.alternate {
   color: var(--neutral-white);
 }
-.link:not(:disabled):active {
+/* A link has no body to lift, so it keeps the underline and the chevron alone. Both
+   selectors carry a class more than the lift rule above, which is what overrides it. */
+.button.link:not(:disabled):not([aria-disabled='true']):hover,
+.button.link:not(:disabled):not([aria-disabled='true']):active {
   transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button,
+  .button :global(svg) {
+    transition: none;
+  }
+  .button.button:not(:disabled):not([aria-disabled='true']):hover,
+  .button.button:not(:disabled):not([aria-disabled='true']):active,
+  .button.button:not(:disabled):not([aria-disabled='true']):hover :global(svg):last-child {
+    transform: none;
+  }
 }

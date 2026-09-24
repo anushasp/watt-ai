@@ -1,9 +1,18 @@
 import type { ReactNode } from 'react';
 import type { BaseProps } from '../types';
 import { Text } from '../primitives/Text';
+import { AnimatedNumber } from '../primitives/AnimatedNumber';
 
 export interface StatCardProps extends BaseProps {
+  /** The displayed value. Remains the source of truth, including when countTo is set. */
   value: string;
+  /**
+   * Opt in to a count-up the first time the card is seen. `value` still renders when this
+   * is omitted, so every existing call site is unaffected.
+   */
+  countTo?: number | undefined;
+  /** Formats the in-flight number. Required alongside countTo. */
+  formatValue?: ((value: number) => string) | undefined;
   label: string;
   /** dark = on the green Scheme 4 band · light = white card on a light band. */
   tone?: 'dark' | 'light' | undefined;
@@ -15,6 +24,8 @@ export interface StatCardProps extends BaseProps {
 /** One headline number in Roboto Bold — the only Roboto usage in the system. */
 export function StatCard({
   value,
+  countTo,
+  formatValue,
   label,
   tone = 'dark',
   detail,
@@ -49,7 +60,11 @@ export function StatCard({
           color: isDark ? 'var(--text-on-dark)' : 'var(--text-primary)',
         }}
       >
-        {value}
+        {countTo !== undefined && formatValue ? (
+          <AnimatedNumber to={countTo} format={formatValue} />
+        ) : (
+          value
+        )}
       </span>
       <Text as="span" size="medium" weight={500} dark={isDark}>
         {label}

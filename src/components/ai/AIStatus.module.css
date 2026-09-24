@@ -1,0 +1,237 @@
+/**
+ * The wattsAI processing mark: a hub with six energy spokes.
+ *
+ * Every state is a different behaviour of the SAME six spokes, so the shape never jumps
+ * between states — only what the spokes are doing changes. That is what makes it read as
+ * one thing thinking rather than six separate spinners.
+ *
+ * Only opacity, transform and SVG stroke properties animate. Nothing here costs layout.
+ */
+
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.mark {
+  display: block;
+  flex-shrink: 0;
+  color: var(--watercourse);
+  transition: color var(--duration-normal) var(--ease-standard);
+}
+.root[data-status='error'] .mark {
+  color: var(--feedback-error);
+}
+.root[data-status='idle'] .mark {
+  color: var(--ink-35);
+}
+
+.hub {
+  fill: currentColor;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform var(--duration-normal) var(--ease-emphasized);
+}
+
+/* The ring is the hub's echo: it only ever appears for success. */
+.ring {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+  transform: scale(0.4);
+}
+
+.spoke {
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  opacity: 0.25;
+  transition: opacity var(--duration-normal) var(--ease-standard);
+}
+
+/* The travelling pulse. Written from the hub outward, so a negative offset moves away from
+   the centre and a positive one moves toward it — one keyframe pair, two directions. */
+.pulse {
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-dasharray: 3 9;
+  opacity: 0;
+}
+
+.check {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0;
+}
+
+/* --- idle: a slow breath, so the mark is present without asking for attention -------- */
+
+.root[data-status='idle'] .hub {
+  animation: breathe 3.2s var(--ease-standard) infinite;
+}
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* --- analyzing: the spokes light in turn, like circuits coming online ---------------- */
+
+.root[data-status='analyzing'] .spoke {
+  animation: spokeLight 1.8s var(--ease-standard) infinite;
+  animation-delay: calc(var(--spoke, 0) * 150ms);
+}
+@keyframes spokeLight {
+  0%,
+  60%,
+  100% {
+    opacity: 0.25;
+  }
+  25% {
+    opacity: 1;
+  }
+}
+
+/* --- searching: energy pushed outward, looking for something ------------------------- */
+
+.root[data-status='searching'] .pulse {
+  opacity: 0.9;
+  animation: outward 1.4s linear infinite;
+  animation-delay: calc(var(--spoke, 0) * 100ms);
+}
+@keyframes outward {
+  from {
+    stroke-dashoffset: 12;
+  }
+  to {
+    stroke-dashoffset: -12;
+  }
+}
+
+/* --- generating: energy drawn back in, converging on the mark ------------------------ */
+
+.root[data-status='generating'] .pulse {
+  opacity: 0.9;
+  animation: inward 1.2s linear infinite;
+  animation-delay: calc(var(--spoke, 0) * 80ms);
+}
+@keyframes inward {
+  from {
+    stroke-dashoffset: -12;
+  }
+  to {
+    stroke-dashoffset: 12;
+  }
+}
+.root[data-status='generating'] .hub {
+  animation: gather 1.2s var(--ease-standard) infinite;
+}
+@keyframes gather {
+  0%,
+  100% {
+    transform: scale(0.9);
+  }
+  70% {
+    transform: scale(1.12);
+  }
+}
+
+/* --- success: one expansion and a drawn check, then it rests ------------------------- */
+
+.root[data-status='success'] .spoke {
+  opacity: 0;
+}
+.root[data-status='success'] .hub {
+  transform: scale(0.001);
+}
+.root[data-status='success'] .ring {
+  animation: ringOut var(--duration-deliberate) var(--ease-emphasized) forwards;
+}
+@keyframes ringOut {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  50% {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.root[data-status='success'] .check {
+  opacity: 1;
+  stroke-dasharray: 1;
+  animation: drawCheck var(--duration-slow) var(--ease-enter) var(--duration-fast) both;
+}
+@keyframes drawCheck {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* --- error: a colour change and a settled shape. No shake, no flash. ----------------- */
+
+.root[data-status='error'] .spoke {
+  opacity: 0.5;
+}
+.root[data-status='error'] .hub {
+  transform: scale(0.8);
+}
+
+/* --- reduced motion ------------------------------------------------------------------ */
+
+/*
+ * Every state still LOOKS different without a single moving part, because each one has a
+ * distinct resting shape: idle is faint, analyzing and generating are lit, searching shows
+ * its pulses parked on the spokes, success is a ring and a check, error is red. The status
+ * text beside the mark is always rendered regardless.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .hub,
+  .ring,
+  .spoke,
+  .pulse,
+  .check {
+    animation: none !important;
+    transition: none;
+  }
+  .root[data-status='analyzing'] .spoke,
+  .root[data-status='generating'] .spoke {
+    opacity: 1;
+  }
+  .root[data-status='searching'] .pulse,
+  .root[data-status='generating'] .pulse {
+    opacity: 0.9;
+  }
+  .root[data-status='idle'] .hub {
+    opacity: 0.6;
+  }
+  .root[data-status='success'] .ring {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .root[data-status='success'] .check {
+    opacity: 1;
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+  }
+}

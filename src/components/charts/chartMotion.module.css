@@ -1,0 +1,95 @@
+/**
+ * Chart draw-in, triggered when the chart scrolls into view rather than on mount.
+ *
+ * The trigger is a `data-chart-inview` attribute set by ChartFrame (and by Sparkline,
+ * which does not use ChartFrame). Charts below the fold therefore still animate when the
+ * user reaches them instead of having already played.
+ *
+ * Lines use pathLength="1" so the dash maths is normalised and needs no JS measurement.
+ * Bars scale from their baseline, which is a transform and so compositor-friendly.
+ *
+ * The pre-animation state is applied only while waiting. useInViewOnce guarantees the
+ * attribute flips to "true" even if IntersectionObserver never delivers, so a chart can
+ * never be stranded undrawn.
+ */
+
+/* --- waiting to enter view ------------------------------------------------------- */
+[data-chart-inview='false'] .drawLine {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+[data-chart-inview='false'] .drawArea {
+  opacity: 0;
+}
+[data-chart-inview='false'] .growBar {
+  transform-box: fill-box;
+  transform-origin: bottom;
+  transform: scaleY(0);
+}
+[data-chart-inview='false'] .growBarH {
+  transform-box: fill-box;
+  transform-origin: left;
+  transform: scaleX(0);
+}
+
+/* --- in view: draw ---------------------------------------------------------------- */
+[data-chart-inview='true'] .drawLine {
+  animation: draw var(--duration-deliberate) var(--ease-enter) both;
+}
+@keyframes draw {
+  from {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+  }
+}
+
+[data-chart-inview='true'] .drawArea {
+  animation: fadeArea var(--duration-normal) var(--ease-enter) var(--duration-slow) both;
+}
+@keyframes fadeArea {
+  from {
+    opacity: 0;
+  }
+}
+
+[data-chart-inview='true'] .growBar {
+  transform-box: fill-box;
+  transform-origin: bottom;
+  animation: grow var(--duration-slow) var(--ease-enter) both;
+  animation-delay: calc(var(--bar, 0) * 12ms);
+}
+@keyframes grow {
+  from {
+    transform: scaleY(0);
+  }
+}
+
+[data-chart-inview='true'] .growBarH {
+  transform-box: fill-box;
+  transform-origin: left;
+  animation: growH var(--duration-slow) var(--ease-enter) both;
+  animation-delay: calc(var(--bar, 0) * 30ms);
+}
+@keyframes growH {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+/* --- reduced motion: render the finished chart, never the waiting state ----------- */
+@media (prefers-reduced-motion: reduce) {
+  [data-chart-inview] .drawLine,
+  [data-chart-inview] .drawArea,
+  [data-chart-inview] .growBar,
+  [data-chart-inview] .growBarH {
+    animation: none;
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+    opacity: 1;
+    transform: none;
+  }
+}

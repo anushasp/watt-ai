@@ -145,8 +145,12 @@ export function ReviewStep({ onConfirm }: ReviewStepProps) {
         </div>
       ) : (
         <dl className={styles.grid}>
-          {rows.map((row) => (
-            <div key={row.label} className={styles.row}>
+          {rows.map((row, index) => (
+            <div
+              key={row.label}
+              className={styles.row}
+              style={{ ['--row' as string]: Math.min(index, 5) }}
+            >
               <dt className={styles.term}>{row.label}</dt>
               <dd
                 className={styles.value}

@@ -8,7 +8,7 @@
   background: var(--neutral-darkest);
   color: var(--neutral-white);
   font-weight: var(--weight-medium);
-  transition: top 0.15s ease;
+  transition: top var(--duration-fast) var(--ease-standard);
 }
 .skipLink:focus {
   top: var(--space-16);

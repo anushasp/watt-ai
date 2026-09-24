@@ -22,6 +22,10 @@ import { DemoBanner } from '@/components/DemoBanner';
 import { Stepper } from '@/components/Stepper';
 import { Dropzone, SelectedFile } from '@/components/Dropzone';
 import { Sparkline } from '@/components/charts/Sparkline';
+import { AIStatus, type AIStatusValue } from '@/components/ai/AIStatus';
+import { AgentProgress } from '@/components/ai/AgentProgress';
+import { EnergyFlow } from '@/components/charts/EnergyFlow';
+import { LIVE_FLOW } from '@/mocks/energy';
 import { InsightCard } from '@/features/dashboard/InsightCard';
 import { PlanCard } from '@/features/plans/PlanCard';
 import { INSIGHTS } from '@/mocks/insights';
@@ -30,6 +34,15 @@ import { SAMPLE_BILL } from '@/mocks/bills';
 import { rankPlans } from '@/services/recommendation';
 import type { HomeProfile } from '@/types';
 import { ComponentPreview, Stage, StateExample, StateGrid } from './components/TokenDisplay';
+
+const AI_STATES: readonly AIStatusValue[] = [
+  'idle',
+  'analyzing',
+  'searching',
+  'generating',
+  'success',
+  'error',
+];
 
 const DEMO_PROFILE: HomeProfile = {
   hasEv: true,
@@ -654,6 +667,60 @@ export function AiComponentsSection() {
         <Text size="small" muted>
           Streaming and timeout states are not implemented; both need a real model call to be
           meaningful.
+        </Text>
+      </ComponentPreview>
+
+      <ComponentPreview
+        name="AIStatus"
+        source="@/components/ai · AIStatus"
+        description="What wattsAI is doing, drawn as six energy spokes around a hub rather than as a spinner. Every state is a different behaviour of the same six spokes, so the mark never changes shape between them."
+        usage="Use wherever the product is working and the user is waiting: bill analysis, plan comparison, the copilot. Drive it from real state — it runs no timers and waits for nothing, so it can never make a flow look slower than it is."
+        accessibility="Renders a live region with the state in words, or a visually hidden label when the caller already announces. Pass `silent` to avoid announcing the same change twice. Each state has a distinct resting shape, so all six are told apart with motion switched off."
+      >
+        <StateGrid>
+          {AI_STATES.map((status) => (
+            <StateExample key={status} label={status}>
+              <Stage>
+                <AIStatus status={status} showLabel silent />
+              </Stage>
+            </StateExample>
+          ))}
+        </StateGrid>
+      </ComponentPreview>
+
+      <ComponentPreview
+        name="AgentProgress"
+        source="@/components/ai · AgentProgress"
+        description="The agent's working checklist: done, doing, still to come. Each step keeps one marker element and changes data-state, so progress is a transition on a stable node rather than one element replacing another."
+        usage="Use when a job has named stages the user benefits from seeing. States must come from real progress — a step that advances on a timer claims work that has not happened."
+        accessibility="An ordered list with the state of each step spelled out for screen readers. The active step's rail is deliberately indeterminate, because the agent reports which step it is on rather than a percentage."
+      >
+        <Stage layout="stack">
+          <AgentProgress
+            label="Example analysis progress"
+            steps={[
+              { id: 'a', label: 'Reading electricity bill', state: 'complete' },
+              { id: 'b', label: 'Analyzing usage', state: 'active' },
+              { id: 'c', label: 'Comparing plans', state: 'pending' },
+              { id: 'd', label: 'Generating recommendation', state: 'pending' },
+            ]}
+          />
+        </Stage>
+      </ComponentPreview>
+
+      <ComponentPreview
+        name="EnergyFlow"
+        source="@/components/charts · EnergyFlow"
+        description="The home energy ecosystem — solar, grid, home, battery and car — with power moving between them. Which links are live, and which way they point, is decided by deriveEnergyFlow from the props; the component only draws the model it is handed."
+        usage="Use to answer 'what is my home doing right now'. Feed it readings, not decisions: it takes generation, usage, grid power and the battery and EV states, and works the arrows out itself."
+        accessibility="Carries a title, a one-sentence description and a visually hidden table of every node's state and reading. Direction is drawn as a static arrowhead, so the travelling pulse can be removed entirely under reduced motion without losing the meaning."
+      >
+        <Stage layout="stack">
+          <EnergyFlow {...LIVE_FLOW} />
+        </Stage>
+        <Text size="small" muted>
+          Stroke weight and pulse speed both scale with each link's real kW, so the 3.2 kW solar line
+          visibly outruns the 0.6 kW battery line. The motion is the reading.
         </Text>
       </ComponentPreview>
 

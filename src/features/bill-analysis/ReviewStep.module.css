@@ -54,3 +54,22 @@
   gap: var(--space-16);
   padding-top: var(--space-16);
 }
+
+/* The extracted fields cascade in, so the analysis reads as arriving rather than being
+   already there. Capped at five steps. */
+.row {
+  animation: rowIn var(--duration-normal) var(--ease-enter) both;
+  animation-delay: calc(var(--row, 0) * 40ms);
+}
+@keyframes rowIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .row {
+    animation: none;
+  }
+}

@@ -5,6 +5,8 @@ export { Heading } from './primitives/Heading';
 export type { HeadingProps } from './primitives/Heading';
 export { Text } from './primitives/Text';
 export type { TextProps, TextSize } from './primitives/Text';
+export { AnimatedNumber } from './primitives/AnimatedNumber';
+export type { AnimatedNumberProps } from './primitives/AnimatedNumber';
 export { Img } from './primitives/Img';
 export type { ImgProps } from './primitives/Img';
 export { VisuallyHidden } from './primitives/VisuallyHidden';

@@ -195,3 +195,38 @@
     max-width: 100%;
   }
 }
+
+/* --- AI motion ------------------------------------------------------------------ */
+
+/* Each turn animates once as it is appended. Messages are append-only with stable keys,
+   so an existing bubble never re-animates. */
+.turn {
+  animation: turnIn var(--duration-normal) var(--ease-enter) both;
+}
+@keyframes turnIn {
+  from {
+    opacity: 0;
+    transform: translateY(var(--motion-rise));
+  }
+}
+
+/* The "show the working" rows cascade in under the answer, capped at five. */
+.calcs > div {
+  animation: turnIn var(--duration-normal) var(--ease-enter) both;
+  animation-delay: calc(var(--row, 0) * 40ms);
+}
+
+/* The AI mark sits beside the thinking text rather than replacing it: the words carry the
+   meaning and the mark carries the sense of work in progress. */
+.thinking {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .turn,
+  .calcs > div {
+    animation: none;
+  }
+}

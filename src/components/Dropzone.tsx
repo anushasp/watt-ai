@@ -132,6 +132,14 @@ export function SelectedFile({
           </Text>
         </span>
       </div>
+      {busy ? (
+        <div
+          className={styles.progress}
+          data-phase={analyzing ? 'analyzing' : 'reading'}
+          role="progressbar"
+          aria-label={analyzing ? 'Analyzing the bill' : 'Reading the file'}
+        />
+      ) : null}
       <div className={styles.actions}>
         <Button onClick={onAnalyze} disabled={busy}>
           {analyzing ? 'Analyzing' : analyzed ? 'Analyze Again' : 'Analyze Bill'}

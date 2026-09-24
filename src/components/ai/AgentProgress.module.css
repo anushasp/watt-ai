@@ -1,0 +1,166 @@
+/**
+ * The agent's checklist: what it has done, what it is doing, what is still to come.
+ *
+ * Each step keeps one marker element for its whole life and changes `data-state`, so
+ * pending -> active -> complete is a transition on a stable node rather than one element
+ * being swapped for another. That is what makes the change read as progress.
+ */
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  padding: var(--space-8) 0;
+  color: var(--text-muted);
+  font-size: var(--text-small);
+  transition: color var(--duration-normal) var(--ease-standard);
+}
+.step[data-state='active'],
+.step[data-state='complete'] {
+  color: var(--text-primary);
+}
+.step[data-state='active'] {
+  font-weight: var(--weight-medium);
+}
+.step[data-state='error'] {
+  color: var(--feedback-error);
+}
+
+/* --- marker ------------------------------------------------------------------------- */
+
+.marker {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 1.5px solid var(--ink-20);
+  background: var(--neutral-white);
+  color: var(--neutral-white);
+  transition:
+    border-color var(--duration-normal) var(--ease-standard),
+    background-color var(--duration-normal) var(--ease-standard);
+}
+.marker[data-state='active'] {
+  border-color: var(--watercourse);
+}
+.marker[data-state='complete'] {
+  border-color: var(--watercourse);
+  background: var(--watercourse);
+}
+.marker[data-state='error'] {
+  border-color: var(--feedback-error);
+  background: var(--feedback-error);
+}
+
+/* The filled centre of the active marker. Scaled, never resized. */
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--watercourse);
+  transform: scale(0);
+  transition: transform var(--duration-normal) var(--ease-emphasized);
+}
+.marker[data-state='active'] .dot {
+  transform: scale(1);
+  animation: dotPulse 1.8s var(--ease-standard) infinite;
+}
+@keyframes dotPulse {
+  0%,
+  100% {
+    transform: scale(0.72);
+  }
+  50% {
+    transform: scale(1);
+  }
+}
+
+/* The tick is drawn on, so completion reads as an action rather than an appearance. */
+.tick {
+  position: absolute;
+  opacity: 0;
+  transform: scale(0.6);
+  transition:
+    opacity var(--duration-fast) var(--ease-enter),
+    transform var(--duration-normal) var(--ease-emphasized);
+}
+.marker[data-state='complete'] .tick,
+.marker[data-state='error'] .tick {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* --- active step's progress rail ----------------------------------------------------- */
+
+/* Indeterminate on purpose: the agent reports which step it is on, not a percentage, and
+   inventing a percentage would be a lie told in pixels. */
+.rail {
+  position: relative;
+  flex: 1;
+  min-width: 24px;
+  max-width: 120px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--ink-10);
+  overflow: hidden;
+}
+.rail::after {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  width: 40%;
+  border-radius: 1px;
+  background: var(--watercourse);
+  animation: sweep 1.6s var(--ease-standard) infinite;
+}
+@keyframes sweep {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(250%);
+  }
+}
+
+.label {
+  flex-shrink: 0;
+}
+
+/* --- reduced motion ------------------------------------------------------------------ */
+
+/*
+ * Colour and the tick still separate the four states, so the list stays readable with
+ * nothing in motion. The indeterminate rail has no meaning without movement, so it is
+ * replaced by a solid tinted bar rather than left sweeping.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .step,
+  .marker,
+  .dot,
+  .tick {
+    transition: none;
+  }
+  .marker[data-state='active'] .dot {
+    animation: none;
+    transform: scale(1);
+  }
+  .rail::after {
+    animation: none;
+    width: 100%;
+    opacity: 0.4;
+  }
+}

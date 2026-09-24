@@ -13,6 +13,7 @@ import {
   TabLink,
   Text,
 } from '@/ds';
+import { Reveal, stagger } from '@/components/Reveal';
 import { EnergyFlowDiagram } from '@/components/charts/EnergyFlowDiagram';
 import { BarChart } from '@/components/charts/BarChart';
 import { DemoBanner } from '@/components/DemoBanner';
@@ -20,6 +21,7 @@ import { ENERGY_FLOW, TWELVE_MONTH_COST } from '@/mocks/energy';
 import { formatMoney } from '@/services/money';
 import { useSession } from '@/state/SessionContext';
 import { ROUTES } from '@/app/routes';
+import styles from './HomePage.module.css';
 import { useState } from 'react';
 
 const PLAN_TABS = [
@@ -51,27 +53,33 @@ export function HomePage() {
       <Section scheme={1} size="md">
         <Split>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-32)' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-24)' }}>
-              <Heading level={1}>Smarter energy starts with your bill</Heading>
-              <Text size="medium" muted>
-                Upload your electricity bill to understand usage, discover savings, and find better
-                energy options. wattsAI reads the fine print so you do not have to.
-              </Text>
-            </div>
-            <div style={{ display: 'flex', gap: 'var(--space-16)', flexWrap: 'wrap' }}>
-              <Button onClick={() => void navigate(ROUTES.billAnalysis)}>Analyze My Bill</Button>
-              <Button variant="secondary" onClick={() => scrollToHowItWorks()}>
-                See How It Works
-              </Button>
-            </div>
+            <Reveal>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-24)' }}>
+                <Heading level={1}>Smarter energy starts with your bill</Heading>
+                <Text size="medium" muted>
+                  Upload your electricity bill to understand usage, discover savings, and find better
+                  energy options. wattsAI reads the fine print so you do not have to.
+                </Text>
+              </div>
+            </Reveal>
+            <Reveal delay={stagger(1)}>
+              <div style={{ display: 'flex', gap: 'var(--space-16)', flexWrap: 'wrap' }}>
+                <Button onClick={() => void navigate(ROUTES.billAnalysis)}>Analyze My Bill</Button>
+                <Button variant="secondary" onClick={() => scrollToHowItWorks()}>
+                  See How It Works
+                </Button>
+              </div>
+            </Reveal>
           </div>
           <SplitMedia>
-            <Img
-              src="/images/hero-bill.jpg"
-              alt="A person at a kitchen table reading a paper electricity bill beside a laptop"
-              ratio="4 / 3"
-              loading="eager"
-            />
+            <Reveal delay={stagger(2)}>
+              <Img
+                src="/images/hero-bill.jpg"
+                alt="A person at a kitchen table reading a paper electricity bill beside a laptop"
+                ratio="4 / 3"
+                loading="eager"
+              />
+            </Reveal>
           </SplitMedia>
         </Split>
       </Section>
@@ -85,9 +93,33 @@ export function HomePage() {
           align="left"
         />
         <Grid min={240}>
-          <StatCard value="$540" label="Potential annual savings" detail="Against a typical single-rate plan" />
-          <StatCard value="23%" label="Peak-hour usage" detail="Share of energy billed at the highest rate" />
-          <StatCard value="$41" label="Monthly EV charging cost" detail="At an overnight rate of 11.2 cents" />
+          <Reveal delay={stagger(0)} className={styles.fill}>
+            <StatCard
+              value="$540"
+              countTo={540}
+              formatValue={(v) => formatMoney(v, { cents: false })}
+              label="Potential annual savings"
+              detail="Against a typical single-rate plan"
+            />
+          </Reveal>
+          <Reveal delay={stagger(1)} className={styles.fill}>
+            <StatCard
+              value="23%"
+              countTo={23}
+              formatValue={(v) => `${Math.round(v)}%`}
+              label="Peak-hour usage"
+              detail="Share of energy billed at the highest rate"
+            />
+          </Reveal>
+          <Reveal delay={stagger(2)} className={styles.fill}>
+            <StatCard
+              value="$41"
+              countTo={41}
+              formatValue={(v) => formatMoney(v, { cents: false })}
+              label="Monthly EV charging cost"
+              detail="At an overnight rate of 11.2 cents"
+            />
+          </Reveal>
         </Grid>
         <DemoBanner tone="dark">
           These headline figures are illustrative. Analyze a bill to see numbers built from your own
@@ -103,42 +135,48 @@ export function HomePage() {
           level={2}
         />
         <Grid min={300}>
-          <FeatureCard
-            icon="DataExploration"
-            tagline="Understand"
-            heading="Understand your bill"
-            text="Upload your bill and wattsAI breaks down every charge, fee and rate tier in plain language."
-            headingSize="h5"
-            actions={
-              <Link to={ROUTES.billAnalysis}>
-                <Button variant="link">Analyze a bill</Button>
-              </Link>
-            }
-          />
-          <FeatureCard
-            icon="Compare"
-            tagline="Compare"
-            heading="Compare plans built for your actual usage"
-            text="Plans are costed against your estimated consumption, not an average household."
-            headingSize="h5"
-            actions={
-              <Link to={ROUTES.plans}>
-                <Button variant="link">See plans</Button>
-              </Link>
-            }
-          />
-          <FeatureCard
-            icon="HomeMax"
-            tagline="Optimize"
-            heading="Optimize continuously as your home changes"
-            text="Add an EV, panels or a battery and the recommendation moves with you."
-            headingSize="h5"
-            actions={
-              <Link to={ROUTES.dashboard}>
-                <Button variant="link">Open the dashboard</Button>
-              </Link>
-            }
-          />
+          <Reveal delay={stagger(0)} className={styles.fill}>
+            <FeatureCard
+              icon="DataExploration"
+              tagline="Understand"
+              heading="Understand your bill"
+              text="Upload your bill and wattsAI breaks down every charge, fee and rate tier in plain language."
+              headingSize="h5"
+              actions={
+                <Link to={ROUTES.billAnalysis}>
+                  <Button variant="link">Analyze a bill</Button>
+                </Link>
+              }
+            />
+          </Reveal>
+          <Reveal delay={stagger(1)} className={styles.fill}>
+            <FeatureCard
+              icon="Compare"
+              tagline="Compare"
+              heading="Compare plans built for your actual usage"
+              text="Plans are costed against your estimated consumption, not an average household."
+              headingSize="h5"
+              actions={
+                <Link to={ROUTES.plans}>
+                  <Button variant="link">See plans</Button>
+                </Link>
+              }
+            />
+          </Reveal>
+          <Reveal delay={stagger(2)} className={styles.fill}>
+            <FeatureCard
+              icon="HomeMax"
+              tagline="Optimize"
+              heading="Optimize continuously as your home changes"
+              text="Add an EV, panels or a battery and the recommendation moves with you."
+              headingSize="h5"
+              actions={
+                <Link to={ROUTES.dashboard}>
+                  <Button variant="link">Open the dashboard</Button>
+                </Link>
+              }
+            />
+          </Reveal>
         </Grid>
       </Section>
 

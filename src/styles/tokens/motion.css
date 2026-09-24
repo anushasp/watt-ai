@@ -1,0 +1,33 @@
+/**
+ * Motion tokens.
+ *
+ * The first three durations and the press timing match what the design system already
+ * specifies (150ms colour fades, 200ms chevron rotate, 500ms slider) and what the existing
+ * components already use, so adopting these tokens changes nothing visually.
+ *
+ * No easing curve overshoots. The design system says "no bounces".
+ */
+:root{
+/* Duration */
+--duration-instant:100ms;
+--duration-fast:150ms;
+--duration-normal:200ms;
+--duration-slow:320ms;
+--duration-deliberate:500ms;
+/* The only continuous loop in the product: the energy-flow diagram. */
+--duration-ambient:3000ms;
+
+/* Easing */
+--ease-standard:cubic-bezier(0.2,0,0.2,1);
+--ease-enter:cubic-bezier(0,0,0.2,1);
+--ease-exit:cubic-bezier(0.4,0,1,1);
+--ease-emphasized:cubic-bezier(0.2,0,0,1);
+
+/* Distance */
+--motion-rise:8px;
+--motion-shift:16px;
+
+/* Stagger, capped: beyond three steps a cascade reads as slow rather than considered. */
+--stagger-step:60ms;
+--stagger-max:180ms;
+}

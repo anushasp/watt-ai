@@ -1,0 +1,40 @@
+/**
+ * Energy-flow motion.
+ *
+ * A dashed stroke travels along the same bezier as the static link, so direction is carried
+ * by the path itself — sources run toward the house, loads away from it. One animated
+ * property, no JS, no per-frame DOM.
+ *
+ * Speed scales with each link's real power: --flow-rate is set inline from kW, so the
+ * 3.2 kW solar line visibly moves faster than the 0.6 kW battery line. The motion is the data.
+ */
+.flowLine {
+  animation: flow calc(var(--duration-ambient) / var(--flow-rate, 1)) linear infinite;
+}
+
+/*
+ * Off screen, the pulses hold still. The diagrams live well down long pages, and there is
+ * nothing to be gained from animating a picture nobody is looking at.
+ *
+ * Paused rather than removed: the dash keeps its position, so scrolling back does not
+ * restart every link from the same phase and make them march in lockstep. The default is
+ * running, so a missing IntersectionObserver can never strand this paused.
+ */
+[data-flow-visible='false'] .flowLine {
+  animation-play-state: paused;
+}
+
+@keyframes flow {
+  to {
+    stroke-dashoffset: -26;
+  }
+}
+
+/* Belt and braces: the global reduced-motion rule would run this once at .01ms, but an
+   ambient loop should be removed outright. See tokens/a11y.css. */
+@media (prefers-reduced-motion: reduce) {
+  .flowLine {
+    animation: none;
+    opacity: 0;
+  }
+}

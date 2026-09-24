@@ -17,4 +17,7 @@
     animation-duration:.01ms !important;animation-iteration-count:1 !important;
     transition-duration:.01ms !important;scroll-behavior:auto !important;
   }
+  /* Continuous ambient motion is removed outright rather than run once at .01ms, so no
+     compositor layer or will-change hint is left behind. */
+  [data-ambient]{animation:none !important;will-change:auto !important}
 }

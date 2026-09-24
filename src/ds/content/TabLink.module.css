@@ -8,7 +8,7 @@
   text-align: left;
   cursor: pointer;
   opacity: 0.5;
-  transition: opacity 0.15s ease;
+  transition: opacity var(--duration-fast) var(--ease-standard);
 }
 .item:last-child {
   border-bottom: 1px solid var(--border-default);

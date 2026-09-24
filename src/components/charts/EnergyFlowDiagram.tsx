@@ -1,9 +1,14 @@
+import { useRef } from 'react';
 import { Icon, type IconName } from '@/ds';
+import { useCountUp } from '@/hooks/useCountUp';
+import { useInView } from '@/hooks/useInView';
+import { useInViewOnce } from '@/hooks/useInViewOnce';
 import { formatKw } from '@/services/money';
 import { flowBalance } from '@/services/energy';
 import type { EnergyFlow, FlowNode } from '@/types';
 import { ChartFrame } from './ChartFrame';
 import { CHART_ACCENT, CHART_INK } from './scales';
+import flowStyles from './flow.module.css';
 
 const W = 880;
 const H = 420;
@@ -20,7 +25,15 @@ export interface EnergyFlowDiagramProps {
  * proportional to kW, so the picture and the numbers agree.
  */
 export function EnergyFlowDiagram({ flow }: EnergyFlowDiagramProps) {
+  const hubRef = useRef<SVGCircleElement>(null);
+  const linksRef = useRef<SVGGElement>(null);
+  const seen = useInViewOnce(hubRef);
+  // The travelling pulses hold still while the diagram is off screen.
+  const visible = useInView(linksRef);
   const { inKw, outKw, balanced } = flowBalance(flow);
+  // The hub total counts up the first time the diagram is seen. The In and Out labels do
+  // not move — they are the balance proof and must read identically at all times.
+  const hubKw = useCountUp(outKw, { enabled: seen });
   const maxKw = Math.max(...flow.sources.map((n) => n.kw), ...flow.loads.map((n) => n.kw));
 
   const sourceY = spread(flow.sources.length);
@@ -46,27 +59,37 @@ export function EnergyFlowDiagram({ flow }: EnergyFlowDiagramProps) {
         { label: 'Total out', values: [formatKw(outKw), 'Out of the home'] },
       ]}
     >
-      {flow.sources.map((node, i) => (
-        <Link
-          key={node.id}
-          from={{ x: 180, y: sourceY[i] ?? H / 2 }}
-          to={{ x: HUB_X - HUB_R, y: H / 2 }}
-          kw={node.kw}
-          maxKw={maxKw}
-          accent
-        />
-      ))}
-      {flow.loads.map((node, i) => (
-        <Link
-          key={node.id}
-          from={{ x: HUB_X + HUB_R, y: H / 2 }}
-          to={{ x: W - 180, y: loadY[i] ?? H / 2 }}
-          kw={node.kw}
-          maxKw={maxKw}
-        />
-      ))}
+      <g ref={linksRef} data-flow-visible={visible ? 'true' : 'false'}>
+        {flow.sources.map((node, i) => (
+          <Link
+            key={node.id}
+            from={{ x: 180, y: sourceY[i] ?? H / 2 }}
+            to={{ x: HUB_X - HUB_R, y: H / 2 }}
+            kw={node.kw}
+            maxKw={maxKw}
+            accent
+          />
+        ))}
+        {flow.loads.map((node, i) => (
+          <Link
+            key={node.id}
+            from={{ x: HUB_X + HUB_R, y: H / 2 }}
+            to={{ x: W - 180, y: loadY[i] ?? H / 2 }}
+            kw={node.kw}
+            maxKw={maxKw}
+          />
+        ))}
+      </g>
 
-      <circle cx={HUB_X} cy={H / 2} r={HUB_R} fill="var(--neutral-white)" stroke={CHART_INK.primary} strokeWidth={1.5} />
+      <circle
+        ref={hubRef}
+        cx={HUB_X}
+        cy={H / 2}
+        r={HUB_R}
+        fill="var(--neutral-white)"
+        stroke={CHART_INK.primary}
+        strokeWidth={1.5}
+      />
       <text x={HUB_X} y={H / 2 - 6} textAnchor="middle" fontSize={13} fill={CHART_INK.label}>
         Your home
       </text>
@@ -78,7 +101,7 @@ export function EnergyFlowDiagram({ flow }: EnergyFlowDiagramProps) {
         fontWeight={700}
         fill={CHART_INK.primary}
       >
-        {formatKw(outKw)}
+        {formatKw(hubKw)}
       </text>
 
       {flow.sources.map((node, i) => (
@@ -125,15 +148,25 @@ function Link({
   const width = 2 + (kw / maxKw) * 14;
   const midX = (from.x + to.x) / 2;
   const d = `M${from.x},${from.y} C${midX},${from.y} ${midX},${to.y} ${to.x},${to.y}`;
+  const stroke = accent ? CHART_ACCENT : CHART_INK.secondary;
+  // 0.5 at no load, 1.5 at the busiest link — a ~3x spread in travel speed.
+  const rate = 0.5 + kw / maxKw;
   return (
-    <path
-      d={d}
-      fill="none"
-      stroke={accent ? CHART_ACCENT : CHART_INK.secondary}
-      strokeWidth={width}
-      strokeLinecap="round"
-      opacity={0.45}
-    />
+    <g>
+      <path d={d} fill="none" stroke={stroke} strokeWidth={width} strokeLinecap="round" opacity={0.45} />
+      <path
+        className={flowStyles.flowLine}
+        data-ambient=""
+        d={d}
+        fill="none"
+        stroke={stroke}
+        strokeWidth={Math.max(1.5, width * 0.34)}
+        strokeLinecap="round"
+        strokeDasharray="4 22"
+        opacity={0.8}
+        style={{ ['--flow-rate' as string]: rate.toFixed(2) }}
+      />
+    </g>
   );
 }
 

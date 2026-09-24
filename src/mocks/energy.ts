@@ -1,4 +1,5 @@
 import type { EndUse, EnergyFlow, TariffSplitPoint, UsagePoint } from '@/types';
+import type { EnergyFlowInput } from '@/services/energyFlow';
 
 /**
  * Simulated instantaneous power, in kW. Sources and loads balance exactly:
@@ -20,6 +21,29 @@ export const ENERGY_FLOW: EnergyFlow = {
     { id: 'always-on', label: 'Always on', kw: 0.5, icon: 'DataUsage' },
   ],
   todayKwh: 28.4,
+};
+
+/**
+ * The same instant as ENERGY_FLOW, expressed as the five-node ecosystem.
+ *
+ *   in  3.2 solar + 2.4 grid + 0.6 battery = 6.2 kW
+ *   out 4.3 house + 1.9 car               = 6.2 kW
+ *
+ * `homeUsage` is the house WITHOUT the car, because the car is its own node here, where in
+ * ENERGY_FLOW it is one of the loads. The two fixtures describe one home, so they have to
+ * agree; `energyFlow.test.ts` holds them to it.
+ */
+export const LIVE_FLOW: EnergyFlowInput = {
+  solarGeneration: 3.2,
+  homeUsage: 4.3,
+  gridPower: 2.4,
+  batteryLevel: 78,
+  batteryState: 'discharging',
+  batteryPower: 0.6,
+  evConnected: true,
+  evCharging: true,
+  evPower: 1.9,
+  optimizationEnabled: true,
 };
 
 /** Daily usage and cost for the current billing period. */

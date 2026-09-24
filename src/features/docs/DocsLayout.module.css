@@ -37,7 +37,7 @@
   background: var(--ink-5);
 }
 .chevron {
-  transition: transform 0.2s ease;
+  transition: transform var(--duration-normal) var(--ease-standard);
 }
 .toggle[aria-expanded='true'] .chevron {
   transform: rotate(90deg);

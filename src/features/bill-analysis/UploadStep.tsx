@@ -3,6 +3,7 @@ import { Button, Heading, Icon, Text } from '@/ds';
 import { Dropzone, SelectedFile } from '@/components/Dropzone';
 import { DemoBanner } from '@/components/DemoBanner';
 import { SAMPLE_BILL } from '@/mocks/bills';
+import { AnalysisProgress } from './AnalysisProgress';
 import { useSession } from '@/state/SessionContext';
 
 export interface UploadStepProps {
@@ -104,6 +105,12 @@ export function UploadStep({ onAnalyzed }: UploadStepProps) {
         <Text size="small" style={{ color: 'var(--feedback-error)', fontWeight: 500 }}>
           {state.uploadError}
         </Text>
+      ) : null}
+
+      {/* Shown once there is something to report on, and driven entirely by session state.
+          `busy` is part of the test because the sample-bill path analyzes without a file. */}
+      {hasFile || busy || state.bill !== null ? (
+        <AnalysisProgress status={state.uploadStatus} bill={state.bill} error={state.uploadError} />
       ) : null}
 
       <div style={{ display: 'flex', gap: 'var(--space-16)', flexWrap: 'wrap', alignItems: 'center' }}>

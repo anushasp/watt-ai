@@ -1,0 +1,185 @@
+/**
+ * A stand-in for the bill being read.
+ *
+ * The sweeping line is a `translateY` on a single absolutely positioned element inside an
+ * `overflow: hidden` card, so it never touches layout and never triggers a reflow of the
+ * page around it.
+ *
+ * The card is decorative: everything it depicts is also stated in the status text and in
+ * the review step that follows, so it is hidden from assistive technology entirely.
+ */
+
+.card {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  padding: var(--space-24);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-card);
+  background: var(--neutral-white);
+  /* Deterministic height. The card's content is entirely ours and none of it wraps, so
+     fixing the height both removes any layout shift between phases and gives the sweep a
+     known distance to travel — which is what keeps the sweep a pure transform. */
+  min-height: 244px;
+  transition: border-color var(--duration-normal) var(--ease-standard);
+}
+.card[data-phase='complete'] {
+  border-color: var(--watercourse);
+}
+.card[data-phase='error'] {
+  border-color: var(--feedback-error);
+}
+
+/* --- the page being read ------------------------------------------------------------- */
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  padding-bottom: var(--space-12);
+  border-bottom: 1px solid var(--border-default);
+  color: var(--ink-35);
+  transition: color var(--duration-normal) var(--ease-standard);
+}
+.card[data-phase='complete'] .header {
+  color: var(--watercourse);
+}
+.headerBar {
+  height: 8px;
+  flex: 1;
+  max-width: 140px;
+  border-radius: 4px;
+  background: var(--ink-10);
+}
+
+/* Filler lines. Purely the texture of a page, so they stay flat and quiet. */
+.lines {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.line {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--ink-5);
+}
+
+/* --- detected fields ----------------------------------------------------------------- */
+
+.fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-8);
+  margin: 0;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-8) var(--space-12);
+  border-radius: var(--radius-tag);
+  border: 1px solid transparent;
+  background: var(--ink-5);
+  transition:
+    background-color var(--duration-normal) var(--ease-standard),
+    border-color var(--duration-normal) var(--ease-standard);
+}
+/* Found. Each field settles a beat after the one before, so four results read as four
+   findings rather than one block appearing. Capped at four, so it is never a long wait. */
+.field[data-found='true'] {
+  border-color: var(--watercourse-light);
+  background: var(--watercourse-lightest);
+  animation: found var(--duration-normal) var(--ease-emphasized) both;
+  animation-delay: calc(var(--field, 0) * 70ms);
+}
+@keyframes found {
+  from {
+    opacity: 0.4;
+    transform: scale(0.98);
+  }
+}
+
+.fieldLabel {
+  font-size: var(--text-tiny);
+  font-weight: var(--weight-medium);
+  color: var(--ink-60);
+}
+.fieldLabel,
+.fieldValue {
+  margin: 0;
+}
+.fieldValue {
+  font-family: var(--font-numeric);
+  font-size: var(--text-small);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* Before a value is known the slot holds its own height, so nothing shifts when the real
+   value arrives. */
+.fieldPending {
+  height: 6px;
+  width: 60%;
+  margin: 5px 0;
+  border-radius: 3px;
+  background: var(--ink-15);
+}
+
+/* --- the scanning line ---------------------------------------------------------------- */
+
+.scan {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 64px;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--watercourse-lightest) 45%,
+    var(--watercourse-lighter) 50%,
+    var(--watercourse-lightest) 55%,
+    transparent
+  );
+  opacity: 0.85;
+  will-change: transform;
+  animation: sweep 2.2s var(--ease-standard) infinite;
+}
+/* Extraction is the busier half of the job, so the sweep tightens rather than changing
+   into some other motion. */
+.card[data-phase='extracting'] .scan {
+  animation-duration: 1.3s;
+}
+@keyframes sweep {
+  from {
+    transform: translateY(-64px);
+  }
+  to {
+    transform: translateY(244px);
+  }
+}
+
+/* --- reduced motion -------------------------------------------------------------------- */
+
+/*
+ * The sweep means "working", which the status text beside the card already says, so it is
+ * removed rather than frozen mid-card where it would read as a stray green band. The found
+ * state is a border and a background, both of which still apply.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .scan {
+    display: none;
+  }
+  .field[data-found='true'] {
+    animation: none;
+  }
+  .card,
+  .header,
+  .field {
+    transition: none;
+  }
+}

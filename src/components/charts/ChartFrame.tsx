@@ -1,5 +1,6 @@
-import { useId, type ReactNode } from 'react';
+import { useId, useRef, type ReactNode } from 'react';
 import { Text } from '@/ds';
+import { useInViewOnce } from '@/hooks/useInViewOnce';
 import styles from './ChartFrame.module.css';
 
 export interface LegendEntry {
@@ -42,8 +43,16 @@ export function ChartFrame({
   const id = useId();
   const titleId = `${id}-title`;
   const descId = `${id}-desc`;
+  // Charts draw themselves when the reader reaches them, not when the route mounts.
+  const ref = useRef<HTMLElement>(null);
+  const seen = useInViewOnce(ref);
   return (
-    <figure className={styles.frame} style={{ margin: 0 }}>
+    <figure
+      ref={ref}
+      className={styles.frame}
+      style={{ margin: 0 }}
+      data-chart-inview={seen ? 'true' : 'false'}
+    >
       <figcaption className={styles.caption}>
         <Text as="span" size="small" weight={600}>
           {title}

@@ -1,4 +1,5 @@
 import { ChartFrame, type ChartDatum } from './ChartFrame';
+import chartMotion from './chartMotion.module.css';
 import {
   CHART_ACCENT,
   CHART_INK,
@@ -105,9 +106,16 @@ export function LineChart({ title, description, labels, series, format }: LineCh
         return (
           <g key={s.label}>
             {s.area ? (
-              <path d={areaFromPoints(points, y(0))} fill={color} opacity={0.12} />
+              <path
+                className={chartMotion.drawArea}
+                d={areaFromPoints(points, y(0))}
+                fill={color}
+                opacity={0.12}
+              />
             ) : null}
             <path
+              className={chartMotion.drawLine}
+              pathLength={1}
               d={pathFromPoints(points)}
               fill="none"
               stroke={color}

@@ -27,8 +27,8 @@
   cursor: pointer;
   scroll-snap-align: start;
   transition:
-    background-color 0.15s ease,
-    color 0.15s ease;
+    background-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
 }
 .tab:hover:not([aria-selected='true']) {
   color: var(--text-primary);

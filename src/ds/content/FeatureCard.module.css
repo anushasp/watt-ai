@@ -8,6 +8,21 @@
   border-radius: var(--radius-card);
   background: var(--surface-card);
   height: 100%;
+  /* The design system carries separation with a border and no shadow, so a card answers
+     the pointer by warming that border rather than lifting off the page. */
+  transition: border-color var(--duration-fast) var(--ease-standard);
+}
+.card:hover {
+  border-color: var(--ink-35);
+}
+.dark:hover {
+  border-color: var(--white-35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
 }
 .muted {
   background: var(--surface-card-muted);

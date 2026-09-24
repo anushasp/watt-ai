@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router';
 import { Button, FeatureCard, Grid, Heading, Icon, Section, SectionTitle, Tag, Text } from '@/ds';
+import { AIStatus } from '@/components/ai/AIStatus';
 import { DemoBanner } from '@/components/DemoBanner';
 import { SUGGESTED_PROMPTS } from '@/mocks/copilot';
 import { buildAnswer, makeMessage } from '@/services/copilotAnswers';
@@ -149,8 +150,8 @@ export function CopilotPage() {
 
                       {message.calculations && message.calculations.length > 0 ? (
                         <dl className={styles.calcs}>
-                          {message.calculations.map((c) => (
-                            <div key={c.label}>
+                          {message.calculations.map((c, row) => (
+                            <div key={c.label} style={{ ['--row' as string]: Math.min(row, 5) }}>
                               <dt>{c.label}</dt>
                               <dd>{c.value}</dd>
                             </div>
@@ -169,9 +170,14 @@ export function CopilotPage() {
                 {thinking ? (
                   <li className={styles.turn} data-role="assistant">
                     <div className={styles.bubble} data-role="assistant">
-                      <Text as="span" size="small" muted>
-                        Working through the numbers
-                      </Text>
+                      <span className={styles.thinking}>
+                        {/* Silent: the transcript below is already a live region, so the
+                            answer is announced once rather than twice. */}
+                        <AIStatus status="generating" size={28} silent label="Working through the numbers" />
+                        <Text as="span" size="small" muted>
+                          Working through the numbers
+                        </Text>
+                      </span>
                     </div>
                   </li>
                 ) : null}

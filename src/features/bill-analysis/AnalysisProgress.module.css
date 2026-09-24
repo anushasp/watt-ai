@@ -1,0 +1,25 @@
+/* The analysis panel: what wattsAI is doing, beside a picture of it doing it. */
+
+.panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-32);
+  align-items: start;
+}
+.status {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+@media (max-width: 767px) {
+  .panel {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-24);
+  }
+}

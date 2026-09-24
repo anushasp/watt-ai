@@ -11,14 +11,14 @@
   border-left: 1px solid var(--border-default);
   background: var(--neutral-white);
   color: var(--text-primary);
-  animation: slide 0.2s ease;
+  animation: slide var(--duration-normal) var(--ease-enter);
 }
 .drawer::backdrop {
   background: rgba(1, 1, 2, 0.4);
 }
 @keyframes slide {
   from {
-    transform: translateX(16px);
+    transform: translateX(var(--motion-shift));
     opacity: 0;
   }
 }
